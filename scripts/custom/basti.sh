@@ -63,6 +63,7 @@ brew install arq
 brew install bitwarden
 brew install keepassxc
 brew install pivotal/tap/git-together
+brew install --cask clockify
 
 # sdks
 brew install google-cloud-sdk
