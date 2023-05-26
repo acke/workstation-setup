@@ -33,37 +33,48 @@ brew install glances htop # better top
 brew install dog
 brew install ripgrep
 brew install fzf
+brew install zsh-autosuggestions
 
-# For developers of shell scripts
+# For developers
 brew install jq # json parsing
+brew install fnm goreleaser go helm htop httpie kubernetes-cli lua
+brew install mercurial minikube mitmproxy neovim nmap qemu ruby teleport
+brew install xh xz
 
-# Text Editors & note taking
-brew install --cask sublime-text
-brew install --cask obsidian
-
-brew install microsoft-office
 brew install adobe-creative-cloud
-brew install boxcryptor
-brew install google-drive
-brew install meetingbar
-brew install balenaetcher
-brew install onyx
-brew install signal
-brew install spotify
-brew install zoom
-brew install deepl
-brew install expressvpn
-brew install fanny
-brew install keka
-brew install calibre
-brew install veracrypt
-brew install vnc-viewer
-brew install teamviewer
 brew install arq
 brew install bitwarden
+brew install clocker
+brew install cryptomator
+brew install calibre
+brew install deepl
+brew install fanny
+brew install flycut
+brew install google-chrome
+brew install google-drive
+brew install iterm2
 brew install keepassxc
-brew install pivotal/tap/git-together
-brew install --cask clockify
+brew install keka
+brew install meetingbar
+brew install microsoft-auto-update
+brew install microsoft-office
+brew install miro
+brew install onyx
+brew install postman
+brew install rectangle
+brew install signal
+brew install slack
+brew install spotify
+brew install sublime-text
+brew install teamviewer
+brew install tower
+brew install tuple
+brew install vagrant
+brew install veracrypt
+brew install visual-studio-code
+brew install vnc-viewer
+brew install wireshark
+brew install zoom
 
 # sdks
 brew install google-cloud-sdk
@@ -82,7 +93,6 @@ if [[ 'y' == "$APPLE_ID" ]]; then
   mas purchase 1284863847 # Unsplash Wallpapers
   mas purchase 973134470  # Be focused
   mas purchase 1474276998 # HP Smart for Desktop
-  mas purchase 1094255754 # outbank
   mas purchase 1147396723 # WhatsApp
   mas purchase 1352778147 # Bitwarden
 fi
@@ -116,5 +126,5 @@ fi
 # install latest version
 sdk install java
 
-source "$WORK_DIR/scripts/opt-in/containerization.sh"
+#source "$WORK_DIR/scripts/opt-in/containerization.sh"
 source "$WORK_DIR/scripts/custom/basti-git.sh"

@@ -475,10 +475,8 @@ dockutil --add "/Applications/Signal.app" --no-restart
 dockutil --add "/Applications/Adobe Lightroom Classic/Adobe Lightroom Classic.app" --no-restart
 dockutil --add "/Applications/Microsoft Excel.app" --no-restart
 dockutil --add "/Applications/Microsoft Word.app" --no-restart
-dockutil --add "/Applications/Obsidian.app" --no-restart
 dockutil --add "/System/Applications/Reminders.app" --no-restart
 dockutil --add "/System/Applications/Utilities/Activity Monitor.app" --no-restart
-dockutil --add "$HOME/Boxcryptor/OneDrive/Documents" --view auto --display stack --no-restart
 dockutil --add "$HOME/Downloads/" --view auto --display stack
 
 ###############################################################################
@@ -846,16 +844,6 @@ defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool t
 cp -f "${WORK_DIR}"/scripts/custom/shiftit-rectangle.plist ~/Library/Preferences/com.knollsoft.Rectangle.plist
 
 ###############################################################################
-# Boxcryptor                                                                   #
-###############################################################################
-
-# start to login
-open /Applications/Boxcryptor.app/
-
-# set setting to mount it as volume
-/usr/libexec/PlistBuddy -c "Set :com.boxcryptor.osx.SCVolumeSettings:mountAsLocalDisk true" ~/Library/Preferences/com.boxcryptor.osx.plist
-
-###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
@@ -882,6 +870,5 @@ for app in "Activity Monitor" \
 done
 
 open /Applications/Rectangle.app/
-open /Applications/Boxcryptor.app/
 
 echo "Done. Note that some of these changes require a logout/restart to take effect."
