@@ -13,7 +13,10 @@ brew update
 
 echo
 echo "Ensuring your Homebrew directory is writable..."
-sudo chown -Rf $(whoami) $(brew --prefix)/*
+set -e
+prefix=$(brew --prefix)
+sudo chown -Rf "$(whoami)" "$prefix"/*
+set +e
 
 echo
 echo "Installing Homebrew services..."
