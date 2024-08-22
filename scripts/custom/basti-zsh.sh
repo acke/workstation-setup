@@ -36,37 +36,36 @@ echo "source ~/.zshrc.local" >> ~/.zshrc
 cat <<EOF > ~/.zshrc.local
 DISABLE_UPDATE_PROMPT=true
 GOPATH=\$HOME/workspace/go
-GOROOT="\$(brew --prefix golang)/libexec"
+GOROOT="/opt/homebrew/opt/go@1.22/libexec"
 PATH=\$HOME/.cargo/bin:$HOME/bin:/usr/local/bin:\${PATH}
 PATH=\$GOROOT/bin:$PATH:$GOPATH/bin:\$HOME/pact/bin
 EDITOR='nvim'
+MAVEN_OPTS=-Djava.awt.headless=true
 
-ASPATH=/usr/local/share/zsh-autosuggestions
-if [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-  ASPATH=/usr/share/zsh-autosuggestions
+ASPATH=/opt/homebrew/share/zsh-autosuggestions
+if [[ -f \$ASPATH/zsh-autosuggestions.zsh ]]; then
+  source \$ASPATH/zsh-autosuggestions.zsh
 fi
 source \$ASPATH/zsh-autosuggestions.zsh
 
+GITHUB_PRIVATE_TOKEN=
+
+export GITHUB_PRIVATE_TOKEN
 export EDITOR
 export GITHUB_TOKEN
 export GOPATH
 export GOROOT
 export PATH
+export MAVEN_OPTS
 
-alias git='git-together'
 alias git-pull-all='find . -type d -depth 1 -exec git -C {} pull \;'
 alias gpa=git-pull-all
 alias ls='lsd'
 alias dir='ls -lah'
-alias z="zoxide"
 alias vi=nvim
 alias cat='bat -p'
+alias clib='z workspace/cli && git stash && git pull -r && git stash pop && cd cliv2 && go mod tidy && cd - && npm i && make clean && make build-debug'
 
-# disable FZF keybinding for history (ctrl-r) even if initialized in other file in favor for mcfly
-bindkey -r "^R"
-rg --passthru -N "bindkey '\^R' fzf-history-widget" -r "# bindkey '^R' fzf-history-widget" \$HOME/.fzf/shell/key-bindings.zsh > \$HOME/.fzf/shell/key-bindings.without-history.zsh
-
-[ -f \$HOME/.fzf/shell/key-bindings.without-history.zsh ] && source \$HOME/.fzf/shell/key-bindings.without-history.zsh
 eval "\$(direnv hook zsh)"
 eval "\$(zoxide init zsh)"
 eval "\$(mcfly init zsh)"
@@ -85,14 +84,12 @@ function pairing_initials {
     fi
   fi
 }
+
 export PAIRING_INITIALS='%{%F{2}%}\$(pairing_initials)%{\${reset_color}%}'
 export PROMPT="\$PAIRING_INITIALS\$PROMPT"
 
 source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-test -d "\${GOPATH}" || mkdir "\${GOPATH}"
-test -d "\${GOPATH}/src/github.com" || mkdir -p "\${GOPATH}/src/github.com"
 
 # git commit signing
 export GPG_TTY=\$(tty)
