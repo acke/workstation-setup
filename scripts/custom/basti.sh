@@ -58,6 +58,7 @@ brew install tuple
 brew install visual-studio-code
 brew install wireshark
 brew install zoom
+brew install tabbyml/tabby/tabby
 
 echo
 echo "Adding Powerline fonts tap to Homebrew"

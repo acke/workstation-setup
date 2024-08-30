@@ -65,6 +65,7 @@ alias dir='ls -lah'
 alias vi=nvim
 alias cat='bat -p'
 alias clib='z workspace/cli && git stash && git pull -r && git stash pop && cd cliv2 && go mod tidy && cd - && npm i && make clean && make build-debug'
+alias stb='tabby serve --model DeepseekCoder-6.7B --device cuda --chat-model Mistral-7B'
 
 eval "\$(direnv hook zsh)"
 eval "\$(zoxide init zsh)"
