@@ -91,3 +91,6 @@ sdk install java
 
 #source "$WORK_DIR/scripts/opt-in/containerization.sh"
 source "$WORK_DIR/scripts/custom/basti-git.sh"
+
+# install gops for debugging
+go install github.com/google/gops@latest
