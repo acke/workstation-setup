@@ -35,6 +35,7 @@ brew install lazygit
 brew install ripgrep
 brew install fzf
 brew install zsh-autosuggestions
+brew install tilt
 
 # For developers
 brew install jq # json parsing
