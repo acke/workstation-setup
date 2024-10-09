@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 set +e
 
-# install zsh 'basti-style', cred-alert, vim config
-source "${WORK_DIR}"/scripts/custom/basti-zsh.sh
+# install zsh 'skippy-style', cred-alert, vim config
+source "${WORK_DIR}"/scripts/custom/skippy-zsh.sh
 source "${WORK_DIR}"/scripts/opt-in/cred-alert.sh
 source "${WORK_DIR}"/scripts/common/vim-configurations.sh
 
@@ -31,6 +31,7 @@ brew install fd           # better find
 brew install choose       # better cut
 brew install glances htop # better top
 brew install dog
+brew install lazygit
 brew install ripgrep
 brew install fzf
 brew install zsh-autosuggestions
@@ -38,7 +39,7 @@ brew install zsh-autosuggestions
 # For developers
 brew install jq # json parsing
 brew install fnm goreleaser go@1.22 go helm htop httpie kubernetes-cli lua
-brew install mitmproxy neovim nmap ruby teleport
+brew install ack helix mitmproxy neovim nmap ruby teleport
 brew install xh xz
 brew install bitwarden
 brew install clocker
@@ -46,6 +47,7 @@ brew install cryptomator
 brew install flycut
 brew install google-chrome
 brew install google-drive
+brew install gpg
 brew install iterm2
 brew install keepassxc
 brew install keka
@@ -60,6 +62,9 @@ brew install wireshark
 brew install zoom
 brew install tabbyml/tabby/tabby
 
+brew install --cask alfred@4
+brew install --cask visual-studio-code
+
 echo
 echo "Adding Powerline fonts tap to Homebrew"
 brew tap homebrew/cask-fonts
@@ -69,7 +74,7 @@ echo "Add font-hack-nerd-font"
 brew install --cask font-hack-nerd-font
 
 # mac os configurations
-source "$WORK_DIR"/scripts/custom/basti-macos-config.sh
+source "$WORK_DIR"/scripts/custom/skippy-macos-config.sh
 
 # install python & java & lima
 source "$WORK_DIR/scripts/opt-in/python.sh"
@@ -90,7 +95,7 @@ fi
 sdk install java
 
 #source "$WORK_DIR/scripts/opt-in/containerization.sh"
-source "$WORK_DIR/scripts/custom/basti-git.sh"
+  source "$WORK_DIR/scripts/custom/skippy-git.sh"
 
 # install gops for debugging
 go install github.com/google/gops@latest

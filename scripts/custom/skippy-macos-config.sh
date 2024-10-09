@@ -19,10 +19,10 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ###############################################################################
 
 # Set computer name (as done via System Preferences → Sharing)
-#sudo scutil --set ComputerName "basti"
-#sudo scutil --set HostName "basti"
-#sudo scutil --set LocalHostName "basti"
-#sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "basti"
+	#sudo scutil --set ComputerName "skippy"
+	#sudo scutil --set HostName "skippy"
+	#sudo scutil --set LocalHostName "skippy"
+	#sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "skippy"
 
 # Allow apps to be installed from anywhere
 sudo spctl --master-disable
