@@ -1,0 +1,131 @@
+# =============================================================================
+# Homebrew & shell
+# =============================================================================
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="/usr/local/bin:$PATH"
+export SHELL="$(command -v zsh)"
+
+# =============================================================================
+# Oh My Zsh — https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# =============================================================================
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+
+plugins=(
+  aliases
+  autojump
+  colorize
+  dircycle
+  git
+  history
+  screen
+  zoxide
+)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# =============================================================================
+# History
+# =============================================================================
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=1000000000
+export SAVEHIST=1000000000
+setopt EXTENDED_HISTORY
+
+# =============================================================================
+# Node: fnm (primary) & nvm
+# =============================================================================
+export PATH="$HOME/.fnm:$PATH"
+eval "$(fnm env)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+
+# =============================================================================
+# Go
+# =============================================================================
+unset GOROOT
+[ -d "/opt/homebrew/opt/go/libexec" ] && export GOROOT="/opt/homebrew/opt/go/libexec"
+export GOPATH="${GOPATH:-$HOME/go}"
+export PATH="$PATH:$GOPATH/bin"
+
+# =============================================================================
+# PATH — tools & CLIs (order: project tools → user → npm → apps)
+# =============================================================================
+export PATH="/Users/skippy/repos/snyk-ls/.bin/pact/bin:$PATH"
+export PATH="$PATH:/Users/skippy/tools"
+# Do not use $(npm config get prefix) here — it runs npm/node on every login and
+# triggers macOS privacy prompts. Homebrew shellenv + fnm already put global bins on PATH.
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/Users/skippy/.cargo/bin:$PATH"
+export PATH="/Users/skippy/.codeium/windsurf/bin:$PATH"
+
+# Google Cloud SDK
+if [ -f '/Users/skippy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then
+  . '/Users/skippy/Downloads/google-cloud-sdk/path.zsh.inc'
+fi
+if [ -f '/Users/skippy/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then
+  . '/Users/skippy/Downloads/google-cloud-sdk/completion.zsh.inc'
+fi
+
+# =============================================================================
+# Aliases
+# =============================================================================
+alias k='kubectl'
+alias sk="/Users/skippy/repos/skippy/target/release/skippy"
+alias snyk='/Users/skippy/repos/cli/binary-releases/snyk-macos-arm64'
+alias my="/Users/skippy/repos/prtracker/target/release/my-prs"
+alias tm='task-master'
+alias taskmaster='task-master'
+alias hamster='task-master'
+alias ham='task-master'
+
+# ============================================================                                                                                                                                                                                                                                                                                                                                                                                                                                           =================
+# Other profiles
+# =============================================================================
+[ -f ~/.bash_profile ] && . ~/.bash_profile
+
+# =============================================================================
+# fzf & mcfly
+# =============================================================================
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+eval "$(mcfly init zsh)"
+
+# =============================================================================
+# GPG & SSH
+# =============================================================================
+export GPG_TTY="$(tty)"
+gpgconf --launch gpg-agent
+[ -f ~/.ssh/snyk ] && ssh-add -q ~/.ssh/snyk 2>/dev/null
+
+# =============================================================================
+# Snyk internal — secrets read from macOS Keychain
+#   Store with: read -s VAR && security add-generic-password -a "$USER" -s NAME -w "$VAR" && unset VAR
+# =============================================================================
+export SNYK_TOKEN="$(security find-generic-password -a "$USER" -s SNYK_TOKEN -w 2>/dev/null)"
+export SNYK_INTERNAL_PROXY_CREDENTIALS="$(security find-generic-password -a "$USER" -s SNYK_INTERNAL_PROXY_CREDENTIALS -w 2>/dev/null)"
+export SNYK_INTERNAL_BROKER_CREDENTIALS="$(security find-generic-password -a "$USER" -s SNYK_INTERNAL_BROKER_CREDENTIALS -w 2>/dev/null)"
+export SNYK_INTERNAL_PROXY_HOST='proxy.dev16.us-east1.snyk-main.gcp.snyk-internal.net'
+
+# =============================================================================
+# Local overrides (e.g. sdkman in ~/.zshrc.local)
+# =============================================================================
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+export PATH="$HOME/Documents/commercial/ide-tools/cli:$PATH"
+export PATH="$HOME/repos/ide-tools/cli:$PATH"
+export PATH="$HOME/repos/workstation-setup/scripts/custom/sync:$PATH"
+
+# =============================================================================
+# ide-tools: sync skills/rules into ~/.cursor and ~/.claude as symlinks.
+# Idempotent. Prints one summary line. Set IDE_TOOLS_SYNC_VERBOSE=1 for detail,
+# or IDE_TOOLS_SYNC_SUMMARY=0 to silence.
+# =============================================================================
+SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
+[ -x "$SYNC_DIR/ide-tools-sync" ] && "$SYNC_DIR/ide-tools-sync"
+
+# bastiandoetsch/skills-and-agents: preview source for skills not yet in snyk/ide-tools.
+# The sync script pulls quietly, then symlinks new skills/agents (snyk wins precedence).
+# Set BASTIAN_SYNC_PULL=0 to skip the pull, BASTIAN_SYNC_SUMMARY=0 to silence.
+[ -x "$SYNC_DIR/bastian-skills-sync" ] && "$SYNC_DIR/bastian-skills-sync"
+unset SYNC_DIR
