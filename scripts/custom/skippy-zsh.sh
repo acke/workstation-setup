@@ -2,6 +2,10 @@ echo "Installing oh-my-zsh"
 OH_DIR=~/.oh-my-zsh
 NOW=$(date +"%Y.%m.%d_%H-%M-%S")
 
+# Absolute path of this workstation-setup checkout — baked into ~/.zshrc.local
+# below so every new shell can find scripts/custom/sync regardless of clone location.
+REPO_ABS="$(cd "${WORK_DIR}" && pwd)"
+
 # backup local config
 cp ~/.zshrc.local ~/.zshrc.local."$NOW"
 
@@ -96,7 +100,7 @@ source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 export GPG_TTY=\$(tty)
 SECRET_KEY=\$(gpg --list-secret-keys --keyid-format=long|head -4|tail -1|xargs)
 CONFIGURED_SIGNING_KEY=\$(git config --global user.signingkey)
-cd ~/workspace/workstation-setup/
+cd $REPO_ABS
 if [[ \$SECRET_KEY != \$CONFIGURED_SIGNING_KEY ]]
 then
   echo "Configuring git signing key"
@@ -108,7 +112,7 @@ cd -
 # Scripts live in this repo under scripts/custom/sync/ and pull the remote sources before linking.
 # Env: IDE_TOOLS_SYNC_PULL=0 (skip ide-tools git pull), BASTIAN_SYNC_PULL=0 (skip bastian git pull),
 #      *_SYNC_SUMMARY=0 to silence, *_SYNC_VERBOSE=1 for per-skill detail.
-SYNC_DIR="\$HOME/repos/workstation-setup/scripts/custom/sync"
+SYNC_DIR="$REPO_ABS/scripts/custom/sync"
 export PATH="\$SYNC_DIR:\$PATH"
 [ -x "\$SYNC_DIR/ide-tools-sync" ] && "\$SYNC_DIR/ide-tools-sync"
 [ -x "\$SYNC_DIR/bastian-skills-sync" ] && "\$SYNC_DIR/bastian-skills-sync"
