@@ -103,6 +103,16 @@ then
   git config --global user.signingkey \$SECRET_KEY
 fi
 cd -
+
+# ide-tools/skills sync: symlink skills+agents into ~/.cursor and ~/.claude on every shell.
+# Scripts live in this repo under scripts/custom/sync/ and pull the remote sources before linking.
+# Env: IDE_TOOLS_SYNC_PULL=0 (skip ide-tools git pull), BASTIAN_SYNC_PULL=0 (skip bastian git pull),
+#      *_SYNC_SUMMARY=0 to silence, *_SYNC_VERBOSE=1 for per-skill detail.
+SYNC_DIR="\$HOME/repos/workstation-setup/scripts/custom/sync"
+export PATH="\$SYNC_DIR:\$PATH"
+[ -x "\$SYNC_DIR/ide-tools-sync" ] && "\$SYNC_DIR/ide-tools-sync"
+[ -x "\$SYNC_DIR/bastian-skills-sync" ] && "\$SYNC_DIR/bastian-skills-sync"
+unset SYNC_DIR
 EOF
 cp "${WORK_DIR}"/scripts/custom/skippy.zsh-theme "${OH_DIR}"/themes/
 sed -i '' -e "s/ZSH_THEME=\".*$/ZSH_THEME=\"skippy\"/g" ~/.zshrc

@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# Sync ide-tools skills and IDE config into ~/.claude and ~/.cursor as symlinks.
+# Idempotent; safe to run on every shell load.
+#
+# Layout:
+#   Agent-skills/<group>/.../<skill>/SKILL.md   -> committed shared skills
+#   Agent-skills/local/skills/<skill>/SKILL.md  -> gitignored shared skills
+#   Agent-skills/local/skills-cursor/<skill>/   -> gitignored, also synced to both
+#   Agent-skills/local/cursor-rules             -> file synced to ~/.cursor/rules
+#
+# Targets:
+#   ~/.claude/skills/<name>         -> every SKILL.md dir (committed + local + skills-cursor)
+#   ~/.cursor/skills/<name>         -> every SKILL.md dir under committed + local/skills
+#   ~/.cursor/skills-cursor/<name>  -> every dir under local/skills-cursor
+#   ~/.cursor/rules                 -> Agent-skills/local/cursor-rules (if present)
+#
+# Env:
+#   IDE_TOOLS_REPO          path to clone (default: ~/repos/ide-tools)
+#   IDE_TOOLS_SYNC_PULL=0   skip the git pull step (default: 1 = pull)
+#   IDE_TOOLS_SYNC_VERBOSE=1  log every link/retarget/prune
+#   IDE_TOOLS_SYNC_SUMMARY=0  suppress the summary line
+
+set -u
+
+REPO="${IDE_TOOLS_REPO:-$HOME/repos/ide-tools}"
+AGENT_SKILLS="$REPO/Agent-skills"
+LOCAL_DIR="$AGENT_SKILLS/local"
+
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CURSOR_SKILLS="$HOME/.cursor/skills"
+CURSOR_SKILLS_CURSOR="$HOME/.cursor/skills-cursor"
+CURSOR_RULES="$HOME/.cursor/rules"
+
+VERBOSE="${IDE_TOOLS_SYNC_VERBOSE:-0}"
+SUMMARY="${IDE_TOOLS_SYNC_SUMMARY:-1}"
+LINKED=0
+RETARGETED=0
+PRUNED=0
+SKIPPED=0
+
+log()  { [ "$VERBOSE" = "1" ] && printf '%s\n' "$*" >&2; return 0; }
+warn() { printf 'ide-tools-sync: %s\n' "$*" >&2; }
+
+[ -d "$AGENT_SKILLS" ] || { warn "missing $AGENT_SKILLS"; exit 0; }
+
+# Pull latest from remote before linking (set IDE_TOOLS_SYNC_PULL=0 to skip).
+if [ "${IDE_TOOLS_SYNC_PULL:-1}" = "1" ] && [ -e "$REPO/.git" ]; then
+  if git -C "$REPO" pull --ff-only --quiet 2>/dev/null; then
+    log "pulled latest in $REPO"
+  else
+    log "pull skipped or failed in $REPO (offline, dirty tree, or non-ff)"
+  fi
+fi
+
+mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CURSOR_SKILLS_CURSOR"
+
+# link_to <source> <target>
+# Creates a symlink target -> source. If target is already that symlink, no-op.
+# If target is a different symlink, retarget. If target is a real file/dir, warn and skip.
+link_to() {
+  local src="$1" dst="$2"
+  if [ -L "$dst" ]; then
+    local cur
+    cur="$(readlink "$dst")"
+    if [ "$cur" = "$src" ]; then
+      return 0
+    fi
+    ln -sfn "$src" "$dst"
+    RETARGETED=$((RETARGETED + 1))
+    log "retargeted $dst -> $src"
+    return 0
+  fi
+  if [ -e "$dst" ]; then
+    SKIPPED=$((SKIPPED + 1))
+    warn "skip (exists, not a symlink): $dst"
+    return 0
+  fi
+  ln -s "$src" "$dst"
+  LINKED=$((LINKED + 1))
+  log "linked $dst -> $src"
+}
+
+# Remove broken/stale symlinks in a target dir whose targets no longer exist.
+# Only touches symlinks (real files/dirs are left alone).
+prune_broken() {
+  local dir="$1"
+  [ -d "$dir" ] || return 0
+  local entry
+  for entry in "$dir"/*; do
+    [ -L "$entry" ] || continue
+    if [ ! -e "$entry" ]; then
+      rm "$entry"
+      PRUNED=$((PRUNED + 1))
+      log "pruned broken symlink $entry"
+    fi
+  done
+}
+
+# Discover every directory that contains SKILL.md inside a root.
+# Prints one absolute path per line.
+find_skill_dirs() {
+  local root="$1"
+  [ -d "$root" ] || return 0
+  # -mindepth 1 so we don't match $root itself
+  find "$root" -mindepth 1 -type f -name SKILL.md -print 2>/dev/null \
+    | while IFS= read -r f; do dirname "$f"; done
+}
+
+# --- shared skills (committed + local/skills) -> both ~/.claude/skills and ~/.cursor/skills
+# Exclude local/skills-cursor here; those are handled separately so they land in
+# ~/.cursor/skills-cursor (not ~/.cursor/skills).
+SHARED_TMP="$(mktemp)"
+trap 'rm -f "$SHARED_TMP"' EXIT
+
+{
+  # committed: Agent-skills/* but not Agent-skills/local
+  for sub in "$AGENT_SKILLS"/*/; do
+    [ -d "$sub" ] || continue
+    case "$sub" in
+      "$LOCAL_DIR"/) continue ;;
+    esac
+    find_skill_dirs "${sub%/}"
+  done
+  # local shared:
+  find_skill_dirs "$LOCAL_DIR/skills"
+} > "$SHARED_TMP"
+
+while IFS= read -r skill_dir; do
+  [ -n "$skill_dir" ] || continue
+  name="$(basename "$skill_dir")"
+  link_to "$skill_dir" "$CLAUDE_SKILLS/$name"
+  link_to "$skill_dir" "$CURSOR_SKILLS/$name"
+done < "$SHARED_TMP"
+
+# --- cursor-flavoured skills: local/skills-cursor/* -> ~/.cursor/skills-cursor and ~/.claude/skills
+if [ -d "$LOCAL_DIR/skills-cursor" ]; then
+  for sub in "$LOCAL_DIR/skills-cursor"/*/; do
+    [ -d "$sub" ] || continue
+    name="$(basename "${sub%/}")"
+    link_to "${sub%/}" "$CURSOR_SKILLS_CURSOR/$name"
+    link_to "${sub%/}" "$CLAUDE_SKILLS/$name"
+  done
+fi
+
+# --- cursor rules file
+if [ -f "$LOCAL_DIR/cursor-rules" ]; then
+  link_to "$LOCAL_DIR/cursor-rules" "$CURSOR_RULES"
+fi
+
+# --- prune dangling symlinks in managed target dirs
+prune_broken "$CLAUDE_SKILLS"
+prune_broken "$CURSOR_SKILLS"
+prune_broken "$CURSOR_SKILLS_CURSOR"
+
+# --- summary: one-line status, on by default
+if [ "$SUMMARY" = "1" ]; then
+  changes=$((LINKED + RETARGETED + PRUNED))
+  if [ "$changes" -gt 0 ] || [ "$SKIPPED" -gt 0 ]; then
+    printf 'ide-tools: synced ~/.cursor + ~/.claude (linked=%d, retargeted=%d, pruned=%d, skipped=%d)\n' \
+      "$LINKED" "$RETARGETED" "$PRUNED" "$SKIPPED"
+  else
+    printf 'ide-tools: synced ~/.cursor + ~/.claude (up to date)\n'
+  fi
+fi
