@@ -35,7 +35,7 @@ OVERRIDDEN_SNYK_SKILLS=(
 )
 
 log()  { [ "$VERBOSE" = "1" ] && printf '%s\n' "$*" >&2; return 0; }
-warn() { printf 'bastian-skills-sync: %s\n' "$*" >&2; }
+warn() { printf 'external-skills-sync: %s\n' "$*" >&2; }
 
 [ -d "$REPO" ] || { warn "missing $REPO"; exit 0; }
 
@@ -106,5 +106,5 @@ for name in "${OVERRIDDEN_SNYK_SKILLS[@]}"; do
   done
 done
 
-[ "$SUMMARY" = "1" ] && printf 'bastian-skills-sync: linked=%d skipped=%d removed=%d\n' "$LINKED" "$SKIPPED" "$REMOVED" >&2
+[ "$SUMMARY" = "1" ] && printf 'external-skills-sync: linked=%d skipped=%d removed=%d\n' "$LINKED" "$SKIPPED" "$REMOVED" >&2
 exit 0
