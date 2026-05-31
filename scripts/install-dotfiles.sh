@@ -17,6 +17,7 @@ NOW="$(date +%Y.%m.%d_%H-%M-%S)"
 # format: "<files/ subpath>:<$HOME-relative target>"
 LINKS=(
   "zshrc:.zshrc"
+  "claude.md:.claude/CLAUDE.md"
 )
 
 for pair in "${LINKS[@]}"; do
