@@ -127,5 +127,17 @@ SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
 # bastiandoetsch/skills-and-agents: preview source for skills not yet in snyk/ide-tools.
 # The sync script pulls quietly, then symlinks new skills/agents (snyk wins precedence).
 # Set BASTIAN_SYNC_PULL=0 to skip the pull, BASTIAN_SYNC_SUMMARY=0 to silence.
-[ -x "$SYNC_DIR/bastian-skills-sync" ] && "$SYNC_DIR/bastian-skills-sync"
+[ -x "$SYNC_DIR/external-skills-sync" ] && "$SYNC_DIR/external-skills-sync"
 unset SYNC_DIR
+
+# =============================================================================
+# tmux — auto-start on new shell
+# =============================================================================
+if [ -z "$TMUX" ]; then
+  tmux new-session
+fi
+
+# OSC 133 prompt marker — lets tmux jump between prompts in scrollback
+# (C-b P / C-b N, or K/J in copy mode). See files/tmux.conf.
+_osc133_prompt_start() { print -Pn '\e]133;A\e\\' }
+precmd_functions+=(_osc133_prompt_start)
