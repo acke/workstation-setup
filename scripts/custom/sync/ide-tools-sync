@@ -10,12 +10,16 @@
 #   Agent-skills/local/skills/<skill>/SKILL.md  -> gitignored shared skills (wins on name clash)
 #   Agent-skills/local/skills-cursor/<skill>/   -> gitignored, also synced to both
 #   Agent-skills/local/cursor-rules             -> file synced to ~/.cursor/rules
+#   agent/<name>.md                             -> Claude Code subagent definitions
+#   Agent-hooks/<name>.{sh,py}                  -> Claude Code hook scripts
 #
 # Targets:
 #   ~/.claude/skills/<name>         -> every SKILL.md dir (committed + local + skills-cursor)
 #   ~/.cursor/skills/<name>         -> every SKILL.md dir under committed + local/skills
 #   ~/.cursor/skills-cursor/<name>  -> every dir under local/skills-cursor
 #   ~/.cursor/rules                 -> Agent-skills/local/cursor-rules (if present)
+#   ~/.claude/agents/<name>.md      -> every .md under $REPO/agent (Claude only)
+#   ~/.claude/hooks/<name>          -> every .sh/.py under $REPO/Agent-hooks (Claude only)
 #
 # Env:
 #   IDE_TOOLS_REPO          path to clone (default: ~/repos/ide-tools)
@@ -28,11 +32,15 @@ set -u
 REPO="${IDE_TOOLS_REPO:-$HOME/repos/ide-tools}"
 AGENT_SKILLS="$REPO/Agent-skills"
 LOCAL_DIR="$AGENT_SKILLS/local"
+AGENTS_SRC="$REPO/agent"
+HOOKS_SRC="$REPO/Agent-hooks"
 
 CLAUDE_SKILLS="$HOME/.claude/skills"
 CURSOR_SKILLS="$HOME/.cursor/skills"
 CURSOR_SKILLS_CURSOR="$HOME/.cursor/skills-cursor"
 CURSOR_RULES="$HOME/.cursor/rules"
+CLAUDE_AGENTS="$HOME/.claude/agents"
+CLAUDE_HOOKS="$HOME/.claude/hooks"
 
 VERBOSE="${IDE_TOOLS_SYNC_VERBOSE:-0}"
 SUMMARY="${IDE_TOOLS_SYNC_SUMMARY:-1}"
@@ -43,6 +51,10 @@ SKIPPED=0
 LINKED_NAMES=""
 RETARGETED_NAMES=""
 PRUNED_NAMES=""
+# Per-kind counters (kind = skills | agents | hooks).
+L_skills=0;  R_skills=0;  P_skills=0
+L_agents=0;  R_agents=0;  P_agents=0
+L_hooks=0;   R_hooks=0;   P_hooks=0
 
 log()  { [ "$VERBOSE" = "1" ] && printf '%s\n' "$*" >&2; return 0; }
 warn() { printf 'ide-tools-sync: %s\n' "$*" >&2; }
@@ -58,13 +70,14 @@ if [ "${IDE_TOOLS_SYNC_PULL:-1}" = "1" ] && [ -e "$REPO/.git" ]; then
   fi
 fi
 
-mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CURSOR_SKILLS_CURSOR"
+mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CURSOR_SKILLS_CURSOR" "$CLAUDE_AGENTS" "$CLAUDE_HOOKS"
 
-# link_to <source> <target>
+# link_to <source> <target> <kind>
+# kind is one of: skills, agents, hooks — used for per-kind summary counters.
 # Creates a symlink target -> source. If target is already that symlink, no-op.
 # If target is a different symlink, retarget. If target is a real file/dir, warn and skip.
 link_to() {
-  local src="$1" dst="$2"
+  local src="$1" dst="$2" kind="${3:-skills}"
   local name
   name="$(basename "$dst")"
   if [ -L "$dst" ]; then
@@ -76,6 +89,11 @@ link_to() {
     ln -sfn "$src" "$dst"
     RETARGETED=$((RETARGETED + 1))
     RETARGETED_NAMES="$RETARGETED_NAMES $name"
+    case "$kind" in
+      agents) R_agents=$((R_agents + 1)) ;;
+      hooks)  R_hooks=$((R_hooks + 1)) ;;
+      *)      R_skills=$((R_skills + 1)) ;;
+    esac
     log "retargeted $dst -> $src"
     return 0
   fi
@@ -87,13 +105,19 @@ link_to() {
   ln -s "$src" "$dst"
   LINKED=$((LINKED + 1))
   LINKED_NAMES="$LINKED_NAMES $name"
+  case "$kind" in
+    agents) L_agents=$((L_agents + 1)) ;;
+    hooks)  L_hooks=$((L_hooks + 1)) ;;
+    *)      L_skills=$((L_skills + 1)) ;;
+  esac
   log "linked $dst -> $src"
 }
 
 # Remove broken/stale symlinks in a target dir whose targets no longer exist.
 # Only touches symlinks (real files/dirs are left alone).
+# kind is one of: skills, agents, hooks — used for per-kind summary counters.
 prune_broken() {
-  local dir="$1"
+  local dir="$1" kind="${2:-skills}"
   [ -d "$dir" ] || return 0
   local entry name
   for entry in "$dir"/*; do
@@ -103,6 +127,11 @@ prune_broken() {
       rm "$entry"
       PRUNED=$((PRUNED + 1))
       PRUNED_NAMES="$PRUNED_NAMES $name"
+      case "$kind" in
+        agents) P_agents=$((P_agents + 1)) ;;
+        hooks)  P_hooks=$((P_hooks + 1)) ;;
+        *)      P_skills=$((P_skills + 1)) ;;
+      esac
       log "pruned broken symlink $entry"
     fi
   done
@@ -138,8 +167,8 @@ trap 'rm -f "$SHARED_TMP"' EXIT
 while IFS= read -r skill_dir; do
   [ -n "$skill_dir" ] || continue
   name="$(basename "$skill_dir")"
-  link_to "$skill_dir" "$CLAUDE_SKILLS/$name"
-  link_to "$skill_dir" "$CURSOR_SKILLS/$name"
+  link_to "$skill_dir" "$CLAUDE_SKILLS/$name" skills
+  link_to "$skill_dir" "$CURSOR_SKILLS/$name" skills
 done < "$SHARED_TMP"
 
 # --- cursor-flavoured skills: local/skills-cursor/* -> ~/.cursor/skills-cursor and ~/.claude/skills
@@ -147,20 +176,40 @@ if [ -d "$LOCAL_DIR/skills-cursor" ]; then
   for sub in "$LOCAL_DIR/skills-cursor"/*/; do
     [ -d "$sub" ] || continue
     name="$(basename "${sub%/}")"
-    link_to "${sub%/}" "$CURSOR_SKILLS_CURSOR/$name"
-    link_to "${sub%/}" "$CLAUDE_SKILLS/$name"
+    link_to "${sub%/}" "$CURSOR_SKILLS_CURSOR/$name" skills
+    link_to "${sub%/}" "$CLAUDE_SKILLS/$name" skills
   done
 fi
 
 # --- cursor rules file
 if [ -f "$LOCAL_DIR/cursor-rules" ]; then
-  link_to "$LOCAL_DIR/cursor-rules" "$CURSOR_RULES"
+  link_to "$LOCAL_DIR/cursor-rules" "$CURSOR_RULES" skills
+fi
+
+# --- claude agents: $REPO/agent/*.md -> ~/.claude/agents/<name>.md
+if [ -d "$AGENTS_SRC" ]; then
+  for f in "$AGENTS_SRC"/*.md; do
+    [ -f "$f" ] || continue
+    name="$(basename "$f")"
+    link_to "$f" "$CLAUDE_AGENTS/$name" agents
+  done
+fi
+
+# --- claude hooks: $REPO/Agent-hooks/*.{sh,py} -> ~/.claude/hooks/<name>
+if [ -d "$HOOKS_SRC" ]; then
+  for f in "$HOOKS_SRC"/*.sh "$HOOKS_SRC"/*.py; do
+    [ -f "$f" ] || continue
+    name="$(basename "$f")"
+    link_to "$f" "$CLAUDE_HOOKS/$name" hooks
+  done
 fi
 
 # --- prune dangling symlinks in managed target dirs
-prune_broken "$CLAUDE_SKILLS"
-prune_broken "$CURSOR_SKILLS"
-prune_broken "$CURSOR_SKILLS_CURSOR"
+prune_broken "$CLAUDE_SKILLS" skills
+prune_broken "$CURSOR_SKILLS" skills
+prune_broken "$CURSOR_SKILLS_CURSOR" skills
+prune_broken "$CLAUDE_AGENTS" agents
+prune_broken "$CLAUDE_HOOKS" hooks
 
 # dedupe a space-separated list of names (same skill name links to .claude AND .cursor)
 uniq_names() {
@@ -171,8 +220,11 @@ uniq_names() {
 if [ "$SUMMARY" = "1" ]; then
   changes=$((LINKED + RETARGETED + PRUNED))
   if [ "$changes" -gt 0 ] || [ "$SKIPPED" -gt 0 ]; then
-    printf 'ide-tools: synced ~/.cursor + ~/.claude (linked=%d, retargeted=%d, pruned=%d, skipped=%d)\n' \
-      "$LINKED" "$RETARGETED" "$PRUNED" "$SKIPPED"
+    printf 'ide-tools: skills +%d ~%d -%d | agents +%d ~%d -%d | hooks +%d ~%d -%d | skipped=%d\n' \
+      "$L_skills" "$R_skills" "$P_skills" \
+      "$L_agents" "$R_agents" "$P_agents" \
+      "$L_hooks"  "$R_hooks"  "$P_hooks"  \
+      "$SKIPPED"
     [ "$LINKED" -gt 0 ]     && printf '  + added:     %s\n'     "$(uniq_names "$LINKED_NAMES")"
     [ "$RETARGETED" -gt 0 ] && printf '  ~ retargeted: %s\n'    "$(uniq_names "$RETARGETED_NAMES")"
     [ "$PRUNED" -gt 0 ]     && printf '  - removed:   %s\n'     "$(uniq_names "$PRUNED_NAMES")"

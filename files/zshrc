@@ -81,6 +81,34 @@ alias taskmaster='task-master'
 alias hamster='task-master'
 alias ham='task-master'
 
+# =============================================================================
+# Claude starter — print a skills cheatsheet before launching `claude`.
+# Silence with CLAUDE_STARTER_QUIET=1.
+# =============================================================================
+claude() {
+  if [ -z "$CLAUDE_STARTER_QUIET" ]; then
+    local skills_dir="$HOME/repos/ide-tools/Agent-skills"
+    print "\e[36m━━ Claude — skills from ide-tools ━━\e[0m"
+    print ""
+    if [ -d "$skills_dir" ]; then
+      local -a skills; local d
+      for d in "$skills_dir"/*/SKILL.md(N); do
+        skills+=("/${d:h:t}")
+      done
+      if (( ${#skills} > 0 )); then
+        print -C 4 -- $skills
+      else
+        print "  (no skills found in $skills_dir)"
+      fi
+    else
+      print "  (ide-tools not at $skills_dir)"
+    fi
+    print ""
+    print "\e[90m  silence: CLAUDE_STARTER_QUIET=1\e[0m"
+  fi
+  command claude "$@"
+}
+
 # ============================================================                                                                                                                                                                                                                                                                                                                                                                                                                                           =================
 # Other profiles
 # =============================================================================
@@ -131,13 +159,52 @@ SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
 unset SYNC_DIR
 
 # =============================================================================
-# tmux — auto-start on new shell
+# tmux — auto-start on new shell.
+# When launched from Warp, prime the new tmux session with WARP_STARTER_SHOW
+# so the inner shell prints the Warp surface reminder (block below).
+# WARP_STARTER_QUIET=1 disables the reminder.
 # =============================================================================
 if [ -z "$TMUX" ]; then
-  tmux new-session
+  if [ "$TERM_PROGRAM" = "WarpTerminal" ] && [ -z "$WARP_STARTER_QUIET" ]; then
+    tmux new-session -e WARP_STARTER_SHOW=1
+  else
+    tmux new-session
+  fi
+fi
+
+# =============================================================================
+# Warp surface starter — print inside the new tmux session, then clear the
+# session-env flag so subsequent panes/windows don't re-trigger.
+# =============================================================================
+if [ -n "$TMUX" ] && [ -n "$WARP_STARTER_SHOW" ]; then
+  print "\e[36m━━ Warp — pick the right surface before you start ━━\e[0m"
+  print ""
+  print "  \e[33mWindow\e[0m    (Cmd+N)    separate project / context switch"
+  print ""
+  print "  \e[33mTab\e[0m       (Cmd+T)    new shell, same project"
+  print ""
+  print "  \e[33mPane\e[0m      (Cmd+D)    parallel work in same context (logs + tests + edit)"
+  print ""
+  print "  \e[33mSession\e[0m   (Cmd+P)    saved launch config / preset layout"
+  print ""
+  tmux set-environment -u WARP_STARTER_SHOW 2>/dev/null
+  unset WARP_STARTER_SHOW
 fi
 
 # OSC 133 prompt marker — lets tmux jump between prompts in scrollback
 # (C-b P / C-b N, or K/J in copy mode). See files/tmux.conf.
 _osc133_prompt_start() { print -Pn '\e]133;A\e\\' }
 precmd_functions+=(_osc133_prompt_start)
+
+# =============================================================================
+# Line-editing keybindings — needed inside tmux where Warp's editor doesn't apply.
+# In Warp, rebind: Cmd+Backspace -> ^U, Cmd+Left -> ^A, Cmd+Right -> ^E,
+#                  Opt+Backspace -> ^[^?, Opt+Left -> ^[b, Opt+Right -> ^[f.
+# =============================================================================
+bindkey "^[^?" backward-kill-word     # Opt+Backspace: delete word left
+bindkey "^W"   backward-kill-word     # Ctrl+W
+bindkey "^U"   backward-kill-line     # Ctrl+U / Cmd+Backspace: delete to line start
+bindkey "^[b"  backward-word          # Opt+Left
+bindkey "^[f"  forward-word           # Opt+Right
+bindkey "^A"   beginning-of-line      # Ctrl+A / Cmd+Left
+bindkey "^E"   end-of-line            # Ctrl+E / Cmd+Right
