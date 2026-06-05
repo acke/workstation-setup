@@ -196,9 +196,12 @@ if [ -d "$AGENTS_SRC" ]; then
 fi
 
 # --- claude hooks: $REPO/Agent-hooks/*.{sh,py} -> ~/.claude/hooks/<name>
+# Claude Code only runs hook scripts that are marked executable; warn loudly
+# if the source lacks the exec bit so the symlink isn't a silent no-op.
 if [ -d "$HOOKS_SRC" ]; then
   for f in "$HOOKS_SRC"/*.sh "$HOOKS_SRC"/*.py; do
     [ -f "$f" ] || continue
+    [ -x "$f" ] || warn "hook not executable (chmod +x in $HOOKS_SRC): $(basename "$f")"
     name="$(basename "$f")"
     link_to "$f" "$CLAUDE_HOOKS/$name" hooks
   done

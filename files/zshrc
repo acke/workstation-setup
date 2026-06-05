@@ -177,6 +177,10 @@ fi
 # session-env flag so subsequent panes/windows don't re-trigger.
 # =============================================================================
 if [ -n "$TMUX" ] && [ -n "$WARP_STARTER_SHOW" ]; then
+  # Clear the session-env flag FIRST so a pane/window split before this shell
+  # finishes printing doesn't inherit the flag and re-trigger.
+  tmux set-environment -u WARP_STARTER_SHOW
+  unset WARP_STARTER_SHOW
   print "\e[36m━━ Warp — pick the right surface before you start ━━\e[0m"
   print ""
   print "  \e[33mWindow\e[0m    (Cmd+N)    separate project / context switch"
@@ -187,8 +191,6 @@ if [ -n "$TMUX" ] && [ -n "$WARP_STARTER_SHOW" ]; then
   print ""
   print "  \e[33mSession\e[0m   (Cmd+P)    saved launch config / preset layout"
   print ""
-  tmux set-environment -u WARP_STARTER_SHOW 2>/dev/null
-  unset WARP_STARTER_SHOW
 fi
 
 # OSC 133 prompt marker — lets tmux jump between prompts in scrollback
