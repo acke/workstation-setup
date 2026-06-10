@@ -18,6 +18,8 @@ NOW="$(date +%Y.%m.%d_%H-%M-%S)"
 LINKS=(
   "zshrc:.zshrc"
   "claude.md:.claude/CLAUDE.md"
+  "claude-settings.json:.claude/settings.json"
+  "claude-pre-push.sh:.claude/hooks/pre-push.sh"
 )
 
 for pair in "${LINKS[@]}"; do
