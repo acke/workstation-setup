@@ -156,6 +156,11 @@ SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
 # The sync script pulls quietly, then symlinks new skills/agents (snyk wins precedence).
 # Set BASTIAN_SYNC_PULL=0 to skip the pull, BASTIAN_SYNC_SUMMARY=0 to silence.
 [ -x "$SYNC_DIR/external-skills-sync" ] && "$SYNC_DIR/external-skills-sync"
+
+# Claude plugin marketplaces: git pull each clone under ~/.claude/plugins/marketplaces/*
+# so /plugin install sees newly-added plugins without waiting on the harness UI.
+# Set CLAUDE_MARKETPLACES_SYNC_PULL=0 to skip, CLAUDE_MARKETPLACES_SYNC_SUMMARY=0 to silence.
+[ -x "$SYNC_DIR/claude-marketplaces-sync" ] && "$SYNC_DIR/claude-marketplaces-sync"
 unset SYNC_DIR
 
 # =============================================================================

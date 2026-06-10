@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Refresh every Claude Code plugin marketplace clone under
+# ~/.claude/plugins/marketplaces/* with `git pull --ff-only`. Without this the
+# in-process `/plugin install <name>@<market>` only sees plugins that existed
+# when the marketplace was last added or pulled by the harness UI.
+#
+# Idempotent; safe to run on every shell load.
+#
+# Env:
+#   CLAUDE_MARKETPLACES_DIR        marketplaces root (default: ~/.claude/plugins/marketplaces)
+#   CLAUDE_MARKETPLACES_SYNC_PULL=0    skip the git pull step (default: 1 = pull)
+#   CLAUDE_MARKETPLACES_SYNC_VERBOSE=1 log every repo touched
+#   CLAUDE_MARKETPLACES_SYNC_SUMMARY=0 suppress the summary line
+
+set -u
+
+ROOT="${CLAUDE_MARKETPLACES_DIR:-$HOME/.claude/plugins/marketplaces}"
+
+VERBOSE="${CLAUDE_MARKETPLACES_SYNC_VERBOSE:-0}"
+SUMMARY="${CLAUDE_MARKETPLACES_SYNC_SUMMARY:-1}"
+UPDATED=0
+UNCHANGED=0
+FAILED=0
+UPDATED_NAMES=""
+FAILED_NAMES=""
+
+log()  { [ "$VERBOSE" = "1" ] && printf '%s\n' "$*" >&2; return 0; }
+warn() { printf 'claude-marketplaces-sync: %s\n' "$*" >&2; }
+
+[ -d "$ROOT" ] || { log "missing $ROOT (no marketplaces installed)"; exit 0; }
+
+if [ "${CLAUDE_MARKETPLACES_SYNC_PULL:-1}" != "1" ]; then
+  log "pull disabled by env"
+  exit 0
+fi
+
+for dir in "$ROOT"/*/; do
+  [ -d "$dir" ] || continue
+  [ -e "${dir}.git" ] || { log "skip ${dir} (not a git repo)"; continue; }
+  name="$(basename "${dir%/}")"
+
+  before="$(git -C "$dir" rev-parse HEAD 2>/dev/null || echo "")"
+  if out="$(git -C "$dir" pull --ff-only --quiet 2>&1)"; then
+    after="$(git -C "$dir" rev-parse HEAD 2>/dev/null || echo "")"
+    if [ "$before" != "$after" ]; then
+      UPDATED=$((UPDATED + 1))
+      UPDATED_NAMES="$UPDATED_NAMES $name"
+      log "updated $name: ${before:0:7} -> ${after:0:7}"
+    else
+      UNCHANGED=$((UNCHANGED + 1))
+      log "unchanged $name"
+    fi
+  else
+    FAILED=$((FAILED + 1))
+    FAILED_NAMES="$FAILED_NAMES $name"
+    log "failed $name: $out"
+  fi
+done
+
+if [ "$SUMMARY" = "1" ]; then
+  total=$((UPDATED + UNCHANGED + FAILED))
+  if [ "$total" -gt 0 ]; then
+    printf 'claude-marketplaces: updated=%d unchanged=%d failed=%d\n' \
+      "$UPDATED" "$UNCHANGED" "$FAILED"
+    [ "$UPDATED" -gt 0 ] && printf '  ~ pulled: %s\n' "$(echo "$UPDATED_NAMES" | xargs | tr ' ' ',')"
+    [ "$FAILED" -gt 0 ]  && printf '  ! failed: %s\n' "$(echo "$FAILED_NAMES"  | xargs | tr ' ' ',')"
+  fi
+fi
+exit 0
