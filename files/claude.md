@@ -12,3 +12,18 @@ Treat projects as **spec-driven**. `CLAUDE.md` is the source of truth for what t
 ## Reporting style
 
 When reporting information back, be extremely concise. Sacrifice grammar for concision — drop articles, copulas, conjunctions; fragments over sentences; numbers + nouns over prose. Headers, tables, bullets carry meaning; full sentences only when meaning requires them.
+
+## Status Honesty
+
+- Never claim a task is 'started' or 'done' before actually performing work. If a step is skipped or pivoted, surface that immediately rather than backtracking later.
+
+## Sandbox & Git Operations
+
+- When git operations involve writes to `.git/` (rebase, commit-object writes), SSH fetches, or GPG signing, expect sandbox to block them. Retry outside sandbox rather than fighting it.
+- Always verify rebase direction before force-pushing: confirm base branch is correct and PR target hasn't shifted.
+
+## PR Workflow
+
+- When addressing PR review comments: address each one, reply inline, then commit and push. Run lint and tests locally before pushing to avoid CI churn.
+- When user asks for multiple logically-distinct changes, default to stacked/separate PRs unless told otherwise.
+- For Datadog dashboard JSON, use 'ordered' layout — 'free' layout fails on import.
