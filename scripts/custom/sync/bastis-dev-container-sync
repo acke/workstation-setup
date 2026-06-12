@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Keep snyk/bastis-dev-container up to date with a git pull.
+# No symlinks — this repo contains Docker/dev launcher infrastructure only.
+#
+# Env:
+#   BASTIS_DEV_CONTAINER_REPO        path to clone (default: ~/repos/bastis-dev-container)
+#   BASTIS_DEV_CONTAINER_SYNC_PULL=0 skip the git pull step (default: 1 = pull)
+#   BASTIS_DEV_CONTAINER_SYNC_SUMMARY=0  suppress the summary line
+
+set -u
+
+REPO="${BASTIS_DEV_CONTAINER_REPO:-$HOME/repos/bastis-dev-container}"
+
+SUMMARY="${BASTIS_DEV_CONTAINER_SYNC_SUMMARY:-1}"
+
+warn() { printf 'bastis-dev-container-sync: %s\n' "$*" >&2; }
+
+[ -d "$REPO" ] || { warn "missing $REPO — clone snyk/bastis-dev-container there first"; exit 0; }
+
+if [ "${BASTIS_DEV_CONTAINER_SYNC_PULL:-1}" != "1" ]; then
+  exit 0
+fi
+
+[ -e "$REPO/.git" ] || { warn "not a git repo: $REPO"; exit 0; }
+
+before="$(git -C "$REPO" rev-parse HEAD 2>/dev/null || echo "")"
+if git -C "$REPO" pull --ff-only --quiet 2>/dev/null; then
+  after="$(git -C "$REPO" rev-parse HEAD 2>/dev/null || echo "")"
+  if [ "$SUMMARY" = "1" ] && [ "$before" != "$after" ]; then
+    printf 'bastis-dev-container: updated %s -> %s\n' "${before:0:7}" "${after:0:7}" >&2
+  fi
+else
+  warn "pull failed (offline, dirty tree, or non-ff)"
+fi
+
+exit 0
