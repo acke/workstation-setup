@@ -170,9 +170,9 @@ unset _SYNC_STAMP
 # =============================================================================
 if [ -z "$TMUX" ]; then
   if [ "$TERM_PROGRAM" = "WarpTerminal" ] && [ -z "$WARP_STARTER_QUIET" ]; then
-    tmux new-session -e WARP_STARTER_SHOW=1
+    exec tmux new-session -e WARP_STARTER_SHOW=1
   else
-    tmux new-session
+    exec tmux new-session
   fi
 fi
 
