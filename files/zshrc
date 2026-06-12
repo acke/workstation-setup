@@ -146,31 +146,21 @@ export PATH="$HOME/repos/ide-tools/cli:$PATH"
 export PATH="$HOME/repos/workstation-setup/scripts/custom/sync:$PATH"
 
 # =============================================================================
-# ide-tools: sync skills/rules into ~/.cursor and ~/.claude as symlinks.
-# Idempotent. Prints one summary line. Set IDE_TOOLS_SYNC_VERBOSE=1 for detail,
-# or IDE_TOOLS_SYNC_SUMMARY=0 to silence.
+# Daily sync — runs once per calendar day (first shell start only).
+# Force a re-run any time: touch -t 000101010000 ~/.cache/daily-sync-stamp
 # =============================================================================
-SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
-[ -x "$SYNC_DIR/ide-tools-sync" ] && "$SYNC_DIR/ide-tools-sync"
-
-# snyk/bastis-harness: canonical snyk skills/agents/hooks (wins over personal preview).
-# Set BASTIS_HARNESS_SYNC_PULL=0 to skip, BASTIS_HARNESS_SYNC_SUMMARY=0 to silence.
-[ -x "$SYNC_DIR/bastis-harness-sync" ] && "$SYNC_DIR/bastis-harness-sync"
-
-# bastiandoetsch/skills-and-agents: personal preview source for skills not yet in snyk repos.
-# The sync script pulls quietly, then symlinks new skills/agents (snyk wins precedence).
-# Set BASTIAN_SYNC_PULL=0 to skip the pull, BASTIAN_SYNC_SUMMARY=0 to silence.
-[ -x "$SYNC_DIR/external-skills-sync" ] && "$SYNC_DIR/external-skills-sync"
-
-# Claude plugin marketplaces: git pull each clone under ~/.claude/plugins/marketplaces/*
-# so /plugin install sees newly-added plugins without waiting on the harness UI.
-# Set CLAUDE_MARKETPLACES_SYNC_PULL=0 to skip, CLAUDE_MARKETPLACES_SYNC_SUMMARY=0 to silence.
-[ -x "$SYNC_DIR/claude-marketplaces-sync" ] && "$SYNC_DIR/claude-marketplaces-sync"
-
-# snyk/bastis-dev-container: keep Docker/dev-launcher infrastructure up to date.
-# Set BASTIS_DEV_CONTAINER_SYNC_PULL=0 to skip, BASTIS_DEV_CONTAINER_SYNC_SUMMARY=0 to silence.
-[ -x "$SYNC_DIR/bastis-dev-container-sync" ] && "$SYNC_DIR/bastis-dev-container-sync"
-unset SYNC_DIR
+_SYNC_STAMP="$HOME/.cache/daily-sync-stamp"
+if [[ "$(cat "$_SYNC_STAMP" 2>/dev/null)" != "$(date +%Y-%m-%d)" ]]; then
+  SYNC_DIR="$HOME/repos/workstation-setup/scripts/custom/sync"
+  [ -x "$SYNC_DIR/ide-tools-sync" ]            && "$SYNC_DIR/ide-tools-sync"
+  [ -x "$SYNC_DIR/bastis-harness-sync" ]       && "$SYNC_DIR/bastis-harness-sync"
+  [ -x "$SYNC_DIR/external-skills-sync" ]      && "$SYNC_DIR/external-skills-sync"
+  [ -x "$SYNC_DIR/claude-marketplaces-sync" ]  && "$SYNC_DIR/claude-marketplaces-sync"
+  [ -x "$SYNC_DIR/bastis-dev-container-sync" ] && "$SYNC_DIR/bastis-dev-container-sync"
+  date +%Y-%m-%d > "$_SYNC_STAMP"
+  unset SYNC_DIR
+fi
+unset _SYNC_STAMP
 
 # =============================================================================
 # tmux — auto-start on new shell.
