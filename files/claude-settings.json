@@ -173,7 +173,8 @@
     "enableWeakerNetworkIsolation": true,
     "excludedCommands": [
       "git",
-      "gh"
+      "gh",
+      "bd"
     ]
   },
   "alwaysThinkingEnabled": true,
