@@ -23,6 +23,7 @@ cp -n files/.git-authors ~/.git-authors || true
 
 echo "Installing git UI tools"
 set +e # Optional; don't exit if they fail
+brew install lazygit
 brew install --cask rowanj-gitx
 brew install --cask sourcetree
 brew install --cask gitup

@@ -11,6 +11,8 @@ brew install --cask flycut
 brew install --cask rectangle
 defaults write com.knollsoft.Rectangle resizeOnDirectionalMove -bool true
 defaults write com.knollsoft.Rectangle centerHalfCycles -int 1
+brew install --cask dockfix
+brew install --cask alfred@4
 
 # Terminals
 brew install --cask iterm2
