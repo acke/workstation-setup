@@ -5,6 +5,7 @@ echo
 set +e
   brew install rust
   brew install lg
+  brew install --cask lm-studio
   brew install --cask dash # api browser
   brew install --cask postman # api interaction tool
   brew install --cask quicklook-json # OSX tool for viewing JSON
