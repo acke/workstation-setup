@@ -17,4 +17,5 @@ set +e
   brew install tmux
   brew install autojump
   brew install mcfly
+  curl -fsSL https://openclaw.ai/install.sh | bash
 set -e
