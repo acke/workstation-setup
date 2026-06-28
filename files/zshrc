@@ -180,6 +180,7 @@ if [[ "$(cat "$_SYNC_STAMP" 2>/dev/null)" != "$(date +%Y-%m-%d)" ]]; then
   [ -x "$SYNC_DIR/external-skills-sync" ]      && "$SYNC_DIR/external-skills-sync"
   [ -x "$SYNC_DIR/claude-marketplaces-sync" ]  && "$SYNC_DIR/claude-marketplaces-sync"
   [ -x "$SYNC_DIR/bastis-dev-container-sync" ] && "$SYNC_DIR/bastis-dev-container-sync"
+  [ -x "$SYNC_DIR/skills-and-agents-sync" ]   && "$SYNC_DIR/skills-and-agents-sync"
   date +%Y-%m-%d > "$_SYNC_STAMP"
   unset SYNC_DIR
 fi
