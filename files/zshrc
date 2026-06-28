@@ -24,6 +24,10 @@ plugins=(
 
 source "$ZSH/oh-my-zsh.sh"
 
+# zsh-autosuggestions (installed via Homebrew)
+[[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
 # =============================================================================
 # History
 # =============================================================================
@@ -81,6 +85,11 @@ alias taskmaster='task-master'
 alias hamster='task-master'
 alias ham='task-master'
 alias start="/Users/skippy/repos/start/target/debug/start"
+alias battery='pmset -g batt'
+alias branch='git branch'
+alias ta='tmux attach -t'
+alias tl='tmux ls'
+alias tn='tmux new-session -s'
 
 # =============================================================================
 # Claude starter — print a skills cheatsheet before launching `claude`.
@@ -120,6 +129,20 @@ claude() {
 # =============================================================================
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(mcfly init zsh)"
+
+# =============================================================================
+# asdf version manager
+# =============================================================================
+[[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]] && source "$(brew --prefix asdf)/libexec/asdf.sh"
+
+# =============================================================================
+# iTerm2 shell integration + git branch badge
+# =============================================================================
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+function iterm2_print_user_vars() {
+  iterm2_set_user_var gitBranch $((git branch 2>/dev/null) | grep '\*' | cut -c3-)
+}
 
 # =============================================================================
 # GPG & SSH

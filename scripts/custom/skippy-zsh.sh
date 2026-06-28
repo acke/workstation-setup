@@ -17,6 +17,11 @@ cp "$WORK_DIR"/files/dircolors.ansi-dark "$HOME"/.dircolors
 echo "Installing zsh-autosuggestions"
 brew install zsh-autosuggestions
 
+echo "Installing iTerm2 shell integration (enables git badges)"
+if [[ ! -f "$HOME/.iterm2_shell_integration.zsh" ]]; then
+  curl -L https://iterm2.com/shell_integration/zsh -o "$HOME/.iterm2_shell_integration.zsh"
+fi
+
 # Custom theme is available if you want it (set ZSH_THEME="skippy" in zshrc).
 cp "${WORK_DIR}"/scripts/custom/skippy.zsh-theme "${OH_DIR}"/themes/
 
