@@ -20,6 +20,8 @@ LINKS=(
   "claude.md:.claude/CLAUDE.md"
   "claude-settings.json:.claude/settings.json"
   "claude-pre-push.sh:.claude/hooks/pre-push.sh"
+  "omniwm:.config/omniwm"
+  "omarchy-shortcuts.md:omarchy-shortcuts.md"
 )
 
 for pair in "${LINKS[@]}"; do
