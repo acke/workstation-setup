@@ -67,7 +67,7 @@ alias ta='tmux attach -t'
 alias tl='tmux ls'
 alias tn='tmux new-session -s'
 
-# ============================================================                                                                                                                                                                                                                                                                                                                                                                                                                                           =================
+# =============================================================================
 # Other profiles
 # =============================================================================
 [ -f ~/.bash_profile ] && . ~/.bash_profile
@@ -117,14 +117,11 @@ _osc133_prompt_start() { print -Pn '\e]133;A\e\\' }
 precmd_functions+=(_osc133_prompt_start)
 
 # =============================================================================
-# Line-editing keybindings — needed inside tmux where Warp's editor doesn't apply.
-# In Warp, rebind: Cmd+Backspace -> ^U, Cmd+Left -> ^A, Cmd+Right -> ^E,
-#                  Opt+Backspace -> ^[^?, Opt+Left -> ^[b, Opt+Right -> ^[f.
+# Line-editing keybindings — for tmux/screen sessions where Warp's editor
+# doesn't apply. In Warp itself, rebind: Cmd+Backspace -> ^U, Cmd+Left -> ^A,
+# Cmd+Right -> ^E. Opt+Backspace/Left/Right left unbound so OmniWM owns Option.
 # =============================================================================
-bindkey "^[^?" backward-kill-word     # Opt+Backspace: delete word left
 bindkey "^W"   backward-kill-word     # Ctrl+W
 bindkey "^U"   backward-kill-line     # Ctrl+U / Cmd+Backspace: delete to line start
-bindkey "^[b"  backward-word          # Opt+Left
-bindkey "^[f"  forward-word           # Opt+Right
 bindkey "^A"   beginning-of-line      # Ctrl+A / Cmd+Left
 bindkey "^E"   end-of-line            # Ctrl+E / Cmd+Right
