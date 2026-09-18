@@ -37,11 +37,8 @@ export SAVEHIST=1000000000
 setopt EXTENDED_HISTORY
 
 # =============================================================================
-# Node: fnm (primary) & nvm
+# Node: nvm
 # =============================================================================
-export PATH="$HOME/.fnm:$PATH"
-eval "$(fnm env)"
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
@@ -57,67 +54,18 @@ export PATH="$PATH:$GOPATH/bin"
 # =============================================================================
 # PATH — tools & CLIs (order: project tools → user → npm → apps)
 # =============================================================================
-export PATH="/Users/skippy/repos/snyk-ls/.bin/pact/bin:$PATH"
-export PATH="$PATH:/Users/skippy/tools"
 # Do not use $(npm config get prefix) here — it runs npm/node on every login and
-# triggers macOS privacy prompts. Homebrew shellenv + fnm already put global bins on PATH.
+# triggers macOS privacy prompts. Homebrew shellenv already puts global bins on PATH.
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="/Users/skippy/.cargo/bin:$PATH"
-export PATH="/Users/skippy/.codeium/windsurf/bin:$PATH"
-
-# Google Cloud SDK
-if [ -f '/Users/skippy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then
-  . '/Users/skippy/Downloads/google-cloud-sdk/path.zsh.inc'
-fi
-if [ -f '/Users/skippy/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then
-  . '/Users/skippy/Downloads/google-cloud-sdk/completion.zsh.inc'
-fi
 
 # =============================================================================
 # Aliases
 # =============================================================================
-alias k='kubectl'
-alias sk="/Users/skippy/repos/skippy/target/release/skippy"
-alias snyk='/Users/skippy/repos/cli/binary-releases/snyk-macos-arm64'
-alias my="/Users/skippy/repos/prtracker/target/release/my-prs"
-alias tm='task-master'
-alias taskmaster='task-master'
-alias hamster='task-master'
-alias ham='task-master'
-alias start="/Users/skippy/repos/start/target/debug/start"
 alias battery='pmset -g batt'
 alias branch='git branch'
 alias ta='tmux attach -t'
 alias tl='tmux ls'
 alias tn='tmux new-session -s'
-
-# =============================================================================
-# Claude starter — print a skills cheatsheet before launching `claude`.
-# Silence with CLAUDE_STARTER_QUIET=1.
-# =============================================================================
-claude() {
-  if [ -z "$CLAUDE_STARTER_QUIET" ]; then
-    local skills_dir="$HOME/repos/ide-tools/Agent-skills"
-    print "\e[36m━━ Claude — skills from ide-tools ━━\e[0m"
-    print ""
-    if [ -d "$skills_dir" ]; then
-      local -a skills; local d
-      for d in "$skills_dir"/*/SKILL.md(N); do
-        skills+=("/${d:h:t}")
-      done
-      if (( ${#skills} > 0 )); then
-        print -C 4 -- $skills
-      else
-        print "  (no skills found in $skills_dir)"
-      fi
-    else
-      print "  (ide-tools not at $skills_dir)"
-    fi
-    print ""
-    print "\e[90m  silence: CLAUDE_STARTER_QUIET=1\e[0m"
-  fi
-  command claude "$@"
-}
 
 # ============================================================                                                                                                                                                                                                                                                                                                                                                                                                                                           =================
 # Other profiles
@@ -136,36 +84,14 @@ eval "$(mcfly init zsh)"
 [[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]] && source "$(brew --prefix asdf)/libexec/asdf.sh"
 
 # =============================================================================
-# iTerm2 shell integration + git branch badge
-# =============================================================================
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-function iterm2_print_user_vars() {
-  iterm2_set_user_var gitBranch $((git branch 2>/dev/null) | grep '\*' | cut -c3-)
-}
-
-# =============================================================================
-# GPG & SSH
+# GPG
 # =============================================================================
 export GPG_TTY="$(tty)"
-gpgconf --launch gpg-agent
-[ -f ~/.ssh/snyk ] && ssh-add -q ~/.ssh/snyk 2>/dev/null
-
-# =============================================================================
-# Snyk internal — secrets read from macOS Keychain
-#   Store with: read -s VAR && security add-generic-password -a "$USER" -s NAME -w "$VAR" && unset VAR
-# =============================================================================
-export SNYK_TOKEN="$(security find-generic-password -a "$USER" -s SNYK_TOKEN -w 2>/dev/null)"
-export SNYK_INTERNAL_PROXY_CREDENTIALS="$(security find-generic-password -a "$USER" -s SNYK_INTERNAL_PROXY_CREDENTIALS -w 2>/dev/null)"
-export SNYK_INTERNAL_BROKER_CREDENTIALS="$(security find-generic-password -a "$USER" -s SNYK_INTERNAL_BROKER_CREDENTIALS -w 2>/dev/null)"
-export SNYK_INTERNAL_PROXY_HOST='proxy.dev16.us-east1.snyk-main.gcp.snyk-internal.net'
 
 # =============================================================================
 # Local overrides (e.g. sdkman in ~/.zshrc.local)
 # =============================================================================
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-export PATH="$HOME/Documents/commercial/ide-tools/cli:$PATH"
-export PATH="$HOME/repos/ide-tools/cli:$PATH"
 export PATH="$HOME/repos/workstation-setup/scripts/custom/sync:$PATH"
 
 # =============================================================================
@@ -186,39 +112,7 @@ if [[ "$(cat "$_SYNC_STAMP" 2>/dev/null)" != "$(date +%Y-%m-%d)" ]]; then
 fi
 unset _SYNC_STAMP
 
-# =============================================================================
-# tmux — auto-start on new shell.
-# When launched from Warp, prime the new tmux session with WARP_STARTER_SHOW
-# so the inner shell prints the Warp surface reminder (block below).
-# WARP_STARTER_QUIET=1 disables the reminder.
-# =============================================================================
-if [ -z "$TMUX" ] && [ "$TERM_PROGRAM" != "WarpTerminal" ]; then
-  exec tmux new-session
-fi
-
-# =============================================================================
-# Warp surface starter — print inside the new tmux session, then clear the
-# session-env flag so subsequent panes/windows don't re-trigger.
-# =============================================================================
-if [ -n "$TMUX" ] && [ -n "$WARP_STARTER_SHOW" ]; then
-  # Clear the session-env flag FIRST so a pane/window split before this shell
-  # finishes printing doesn't inherit the flag and re-trigger.
-  tmux set-environment -u WARP_STARTER_SHOW
-  unset WARP_STARTER_SHOW
-  print "\e[36m━━ Warp — pick the right surface before you start ━━\e[0m"
-  print ""
-  print "  \e[33mWindow\e[0m    (Cmd+N)    separate project / context switch"
-  print ""
-  print "  \e[33mTab\e[0m       (Cmd+T)    new shell, same project"
-  print ""
-  print "  \e[33mPane\e[0m      (Cmd+D)    parallel work in same context (logs + tests + edit)"
-  print ""
-  print "  \e[33mSession\e[0m   (Cmd+P)    saved launch config / preset layout"
-  print ""
-fi
-
-# OSC 133 prompt marker — lets tmux jump between prompts in scrollback
-# (C-b P / C-b N, or K/J in copy mode). See files/tmux.conf.
+# OSC 133 prompt marker — lets terminals jump between prompts in scrollback.
 _osc133_prompt_start() { print -Pn '\e]133;A\e\\' }
 precmd_functions+=(_osc133_prompt_start)
 

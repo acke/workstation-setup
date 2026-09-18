@@ -27,8 +27,8 @@ maxTotalBytes = 67108864
 [dwindle]
 defaultSplitRatio = 1.0
 moveToRootStable = true
-singleWindowFit = "fill"
-smartSplit = false
+singleWindowFit = "1920x1080"
+smartSplit = true
 splitWidthMultiplier = 1.0
 useGlobalGaps = true
 
@@ -64,7 +64,7 @@ updateChecksEnabled = true
 [gestures]
 fingerCount = 3
 invertDirection = true
-mouseMoveModifierKey = "option"
+mouseMoveModifierKey = "off"
 mouseResizeModifierKey = "option"
 scrollEnabled = true
 scrollModifierKey = "optionShift"
@@ -87,7 +87,7 @@ margin = 1
 [niri]
 alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
-containerPrimarySpanPresets = [0.3333333333333333, 0.5, 0.6666666666666666]
+containerPrimarySpanPresets = [0.25, 0.5]
 infiniteLoop = false
 singleWindowFit = "1920x1080"
 visibleContainerCount = 4
@@ -126,7 +126,7 @@ animationDuration = 0.2
 autoHide = false
 backgroundBlurRadius = 0
 backgroundEffect = "standardBlur"
-enabled = true
+enabled = false
 heightPercent = 50.0
 monitorMode = "focusedWindow"
 opacity = 1.0
@@ -1001,7 +1001,7 @@ id = "toggleSystemStats"
 
 [[workspaces]]
 id = "AD36F001-C57E-41A5-AC1D-DF5249D007F0"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "1"
 
 [workspaces.monitorAssignment]
@@ -1056,19 +1056,3 @@ name = "7"
 
 [workspaces.monitorAssignment]
 type = "secondary"
-
-[[workspaces]]
-id = "0E18F6B0-345A-4078-8B21-33641F07A861"
-layoutType = "dwindle"
-name = "8"
-
-[workspaces.monitorAssignment]
-type = "main"
-
-[[workspaces]]
-id = "8D4D711C-2B2F-4FEC-86BF-FA952037738A"
-layoutType = "dwindle"
-name = "9"
-
-[workspaces.monitorAssignment]
-type = "main"
