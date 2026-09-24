@@ -20,6 +20,8 @@ LINKS=(
   "claude.md:.claude/CLAUDE.md"
   "claude-settings.json:.claude/settings.json"
   "claude-pre-push.sh:.claude/hooks/pre-push.sh"
+  "claude-statusline-tee.sh:.claude/hooks/statusline-tee.sh"
+  "claude-usage-guard.sh:.claude/hooks/usage-guard.sh"
   "omniwm:.config/omniwm"
   "omniwm-shortcuts.md:omniwm-shortcuts.md"
 )
