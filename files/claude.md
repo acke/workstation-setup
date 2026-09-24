@@ -22,6 +22,11 @@ When reporting information back, be extremely concise. Sacrifice grammar for con
 - When git operations involve writes to `.git/` (rebase, commit-object writes), SSH fetches, or GPG signing, expect sandbox to block them. Retry outside sandbox rather than fighting it.
 - Always verify rebase direction before force-pushing: confirm base branch is correct and PR target hasn't shifted.
 
+## Usage Guard
+
+- A PreToolUse hook denies every tool call once the claude.ai 5-hour window is ≥80% or the 7-day window is ≥90% used (`usage-guard.sh`, fed by the status line snapshot in `~/.claude/usage-snapshot.json`). When you see "USAGE GUARD" in a denial: stop, report where you stopped, don't retry or route around it.
+- Override for a session: `CLAUDE_USAGE_GUARD=off`, or thresholds via `CLAUDE_USAGE_GUARD_5H` / `CLAUDE_USAGE_GUARD_7D`. Headless (`-p`, `--bg`) sessions don't refresh the snapshot, so they're only guarded while an interactive session is also open.
+
 ## PR Workflow
 
 - When addressing PR review comments: address each one, reply inline, then commit and push. Run lint and tests locally before pushing to avoid CI churn.

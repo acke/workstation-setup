@@ -62,8 +62,7 @@
       "/tmp"
     ]
   },
-  "model": "sonnet",
-  "remoteControlAtStartup": true,
+  "model": "fable",
   "hooks": {
     "SessionStart": [
       {
@@ -77,6 +76,17 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/usage-guard.sh",
+            "timeout": 5,
+            "statusMessage": "Checking usage window"
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [
@@ -93,7 +103,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
+    "command": "$HOME/.claude/hooks/statusline-tee.sh",
     "padding": 0
   },
   "enabledPlugins": {
@@ -202,7 +212,12 @@
   },
   "theme": "auto",
   "editorMode": "vim",
+  "voice": {
+    "enabled": true
+  },
   "preferredNotifChannel": "iterm2_with_bell",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
   "autoMode": {
     "environment": [
       "### Org-wide",
