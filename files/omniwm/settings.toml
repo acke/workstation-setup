@@ -7,6 +7,7 @@ schemaVersion = 3
 
 [appearance]
 mode = "dark"
+tabRailAppIcons = false
 
 [borders]
 enabled = true
@@ -53,7 +54,7 @@ top = 10.0
 
 [general]
 animationsEnabled = true
-defaultLayoutType = "dwindle"
+defaultLayoutType = "niri"
 hotkeysEnabled = true
 hyperKeyModifiers = "Control+Option+Shift+Command"
 ipcEnabled = false
@@ -66,10 +67,17 @@ fingerCount = 3
 invertDirection = true
 mouseMoveModifierKey = "off"
 mouseResizeModifierKey = "option"
+overviewGestureEnabled = false
+overviewGestureFingerCount = 4
 scrollEnabled = true
 scrollModifierKey = "optionShift"
 scrollSensitivity = 5.0
 trackpadScrollStyle = "snap"
+windowGestureSensitivity = 1.0
+windowMoveEnabled = false
+windowMoveFingerCount = 4
+windowResizeEnabled = false
+windowResizeFingerCount = 3
 workspaceSwipeAxis = "vertical"
 workspaceSwipeEnabled = false
 workspaceSwipeFingerCount = 3
@@ -87,12 +95,15 @@ margin = 1
 [niri]
 alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
-containerPrimarySpanPresets = [0.25, 0.5]
+containerPrimarySpanPresets = [0.23, 0.5]
 infiniteLoop = false
 singleWindowFit = "1920x1080"
-visibleContainerCount = 4
+visibleContainerCount = 3
 
 [overview]
+invertScrollDirection = false
+matchFocusBorder = true
+mouseScrollSpeed = 1.0
 zoom = 1.0
 
 [overview.backdrop]
@@ -160,9 +171,13 @@ position = "overlappingMenuBar"
 reserveLayoutSpace = false
 revealHoldMilliseconds = 200.0
 revealModifier = "off"
+showAccentHighlights = true
 showFloatingWindows = false
+showItemBackgrounds = true
 showLabels = true
+solidBlackBackground = false
 systemStatsButton = false
+transparentBackground = false
 windowLevel = "popup"
 xOffset = 0.0
 yOffset = 0.0
@@ -372,7 +387,7 @@ binding = "Option+6"
 id = "switchWorkspace.5"
 
 [[hotkeys]]
-binding = "Option+Shift+6"
+binding = "Option+Command+6"
 id = "moveToWorkspace.5"
 
 [[hotkeys]]
@@ -380,7 +395,7 @@ binding = "Option+7"
 id = "switchWorkspace.6"
 
 [[hotkeys]]
-binding = "Option+Shift+7"
+binding = "Option+Command+7"
 id = "moveToWorkspace.6"
 
 [[hotkeys]]
@@ -388,7 +403,7 @@ binding = "Option+8"
 id = "switchWorkspace.7"
 
 [[hotkeys]]
-binding = "Option+Shift+8"
+binding = "Option+Command+8"
 id = "moveToWorkspace.7"
 
 [[hotkeys]]
@@ -396,7 +411,7 @@ binding = "Option+9"
 id = "switchWorkspace.8"
 
 [[hotkeys]]
-binding = "Option+Shift+9"
+binding = "Option+Command+9"
 id = "moveToWorkspace.8"
 
 [[hotkeys]]
@@ -480,7 +495,7 @@ binding = "Option+Tab"
 id = "switchWorkspace.next"
 
 [[hotkeys]]
-binding = "Option+Shift+Tab"
+binding = "Option+Command+Grave"
 id = "switchWorkspace.previous"
 
 [[hotkeys]]
@@ -596,19 +611,19 @@ binding = "Unassigned"
 id = "moveColumnToWorkspace.8"
 
 [[hotkeys]]
-binding = "Option+Shift+Left Arrow"
+binding = "Option+Command+Left Arrow"
 id = "move.left"
 
 [[hotkeys]]
-binding = "Option+Shift+Down Arrow"
+binding = "Option+Command+Down Arrow"
 id = "move.down"
 
 [[hotkeys]]
-binding = "Option+Shift+Up Arrow"
+binding = "Option+Command+Up Arrow"
 id = "move.up"
 
 [[hotkeys]]
-binding = "Option+Shift+Right Arrow"
+binding = "Option+Command+Right Arrow"
 id = "move.right"
 
 [[hotkeys]]
@@ -856,7 +871,7 @@ binding = "Unassigned"
 id = "cycleWindowSecondarySpanBackward"
 
 [[hotkeys]]
-binding = "Option+Shift+F"
+binding = "Option+Command+F"
 id = "toggleContainerFullPrimarySpan"
 
 [[hotkeys]]
@@ -892,7 +907,7 @@ binding = "Unassigned"
 id = "setWindowSecondarySpan.increase10Percent"
 
 [[hotkeys]]
-binding = "Option+Shift+B"
+binding = "Option+Command+B"
 id = "balanceSizes"
 
 [[hotkeys]]
@@ -912,7 +927,7 @@ binding = "Option+Equal"
 id = "resizeGrow.horizontal"
 
 [[hotkeys]]
-binding = "Option+Shift+Equal"
+binding = "Option+Command+Equal"
 id = "resizeGrow.vertical"
 
 [[hotkeys]]
@@ -920,7 +935,7 @@ binding = "Option+Minus"
 id = "resizeShrink.horizontal"
 
 [[hotkeys]]
-binding = "Option+Shift+Minus"
+binding = "Option+Command+Minus"
 id = "resizeShrink.vertical"
 
 [[hotkeys]]
@@ -956,7 +971,7 @@ binding = "Option+Space"
 id = "openCommandPalette"
 
 [[hotkeys]]
-binding = "Option+Shift+R"
+binding = "Option+Command+R"
 id = "raiseAllFloatingWindows"
 
 [[hotkeys]]
@@ -976,7 +991,7 @@ binding = "Control+Option+Space"
 id = "openMenuAnywhere"
 
 [[hotkeys]]
-binding = "Option+Shift+Space"
+binding = "Option+Command+Space"
 id = "toggleWorkspaceBarVisibility"
 
 [[hotkeys]]
@@ -988,11 +1003,11 @@ binding = "Option+Return"
 id = "toggleQuakeTerminal"
 
 [[hotkeys]]
-binding = "Option+Shift+L"
+binding = "Option+Command+L"
 id = "toggleWorkspaceLayout"
 
 [[hotkeys]]
-binding = "Option+Shift+O"
+binding = "Option+Command+O"
 id = "toggleOverview"
 
 [[hotkeys]]
@@ -1009,7 +1024,7 @@ type = "main"
 
 [[workspaces]]
 id = "454CECD4-5E9D-4ED1-95D7-979D48817F5F"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "2"
 
 [workspaces.monitorAssignment]
@@ -1017,7 +1032,7 @@ type = "main"
 
 [[workspaces]]
 id = "BEB842B5-E894-4791-9FD1-397C3CDD3538"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "3"
 
 [workspaces.monitorAssignment]
@@ -1025,7 +1040,7 @@ type = "main"
 
 [[workspaces]]
 id = "248AA883-2261-4D45-943C-79C0E46A232B"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "4"
 
 [workspaces.monitorAssignment]
@@ -1033,7 +1048,7 @@ type = "main"
 
 [[workspaces]]
 id = "8B8C45D6-CE9E-41D9-BD50-BE4989D5E3DE"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "5"
 
 [workspaces.monitorAssignment]
@@ -1042,7 +1057,7 @@ type = "main"
 [[workspaces]]
 displayName = "❤️"
 id = "5953F2BF-A378-4266-91B2-287174C4FA4D"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "6"
 
 [workspaces.monitorAssignment]
@@ -1051,7 +1066,7 @@ type = "secondary"
 [[workspaces]]
 displayName = "🚀"
 id = "A7D5E104-6985-4516-8ED5-07F144F2A33D"
-layoutType = "dwindle"
+layoutType = "niri"
 name = "7"
 
 [workspaces.monitorAssignment]

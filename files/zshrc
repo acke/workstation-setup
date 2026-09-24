@@ -125,3 +125,5 @@ bindkey "^W"   backward-kill-word     # Ctrl+W
 bindkey "^U"   backward-kill-line     # Ctrl+U / Cmd+Backspace: delete to line start
 bindkey "^A"   beginning-of-line      # Ctrl+A / Cmd+Left
 bindkey "^E"   end-of-line            # Ctrl+E / Cmd+Right
+
+alias lg="lazygit"
