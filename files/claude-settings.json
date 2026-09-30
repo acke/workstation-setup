@@ -53,7 +53,24 @@
       "Bash(/bin/cat:*)",
       "Bash(/bin/ls:*)",
       "Bash(/usr/bin/head:*)",
-      "Bash(/usr/bin/tail:*)"
+      "Bash(/usr/bin/tail:*)",
+      "mcp__claude_ai_Gmail__get_message",
+      "mcp__claude_ai_Gmail__get_thread",
+      "mcp__claude_ai_Gmail__search_threads",
+      "mcp__claude_ai_Gmail__list_drafts",
+      "mcp__claude_ai_Gmail__get_draft",
+      "mcp__claude_ai_Gmail__list_labels",
+      "mcp__claude_ai_Google_Calendar__list_calendars",
+      "mcp__claude_ai_Google_Calendar__list_events",
+      "mcp__claude_ai_Google_Calendar__get_event",
+      "mcp__claude_ai_Google_Calendar__search_events",
+      "mcp__claude_ai_Google_Calendar__suggest_time",
+      "mcp__claude_ai_Google_Drive__get_file_metadata",
+      "mcp__claude_ai_Google_Drive__get_file_permissions",
+      "mcp__claude_ai_Google_Drive__list_recent_files",
+      "mcp__claude_ai_Google_Drive__read_file_content",
+      "mcp__claude_ai_Google_Drive__search_files",
+      "mcp__claude_ai_Google_Drive__download_file_content"
     ],
     "deny": [
       "Bash(rm -rf /)"
@@ -62,7 +79,7 @@
       "/tmp"
     ]
   },
-  "model": "fable",
+  "model": "sonnet",
   "hooks": {
     "SessionStart": [
       {
@@ -210,13 +227,14 @@
       "effortLevel": "medium"
     }
   },
-  "theme": "auto",
-  "editorMode": "vim",
   "voice": {
     "enabled": true
   },
+  "theme": "auto",
+  "editorMode": "vim",
   "preferredNotifChannel": "iterm2_with_bell",
   "remoteControlAtStartup": true,
+  "crossSessionInbound": "accept",
   "agentPushNotifEnabled": true,
   "autoMode": {
     "environment": [
