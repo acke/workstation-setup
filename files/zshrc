@@ -66,6 +66,8 @@ alias branch='git branch'
 alias ta='tmux attach -t'
 alias tl='tmux ls'
 alias tn='tmux new-session -s'
+alias cw='claude-work'
+alias cwl='tail -f ~/repos/agent-skills/claude-tools/lib/audit-log/AUDIT_LOG.md'
 
 # =============================================================================
 # Other profiles
@@ -127,3 +129,4 @@ bindkey "^A"   beginning-of-line      # Ctrl+A / Cmd+Left
 bindkey "^E"   end-of-line            # Ctrl+E / Cmd+Right
 
 alias lg="lazygit"
+alias my-prs="GITHUB_PRIVATE_TOKEN=\$(gh auth token) /Users/knut/repos/pr-status-monitor/target/release/my-prs"
