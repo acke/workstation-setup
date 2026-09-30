@@ -21,6 +21,7 @@ red = 0.08458520228437894
 
 [clipboard]
 historyEnabled = false
+ignoredTypes = []
 maxItemBytes = 8388608
 maxItems = 200
 maxTotalBytes = 67108864
@@ -95,7 +96,7 @@ margin = 1
 [niri]
 alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
-containerPrimarySpanPresets = [0.23, 0.5]
+containerPrimarySpanPresets = [0.33, 0.5]
 infiniteLoop = false
 singleWindowFit = "1920x1080"
 visibleContainerCount = 3
@@ -343,7 +344,7 @@ binding = "Unassigned"
 id = "assignFocusedWindowToScratchpad.10"
 
 [[hotkeys]]
-binding = "Option+1"
+binding = "LeftOption+1"
 id = "switchWorkspace.0"
 
 [[hotkeys]]
@@ -351,7 +352,7 @@ binding = "Option+Shift+1"
 id = "moveToWorkspace.0"
 
 [[hotkeys]]
-binding = "Option+2"
+binding = "LeftOption+2"
 id = "switchWorkspace.1"
 
 [[hotkeys]]
@@ -359,7 +360,7 @@ binding = "Option+Shift+2"
 id = "moveToWorkspace.1"
 
 [[hotkeys]]
-binding = "Option+3"
+binding = "LeftOption+3"
 id = "switchWorkspace.2"
 
 [[hotkeys]]
@@ -367,7 +368,7 @@ binding = "Option+Shift+3"
 id = "moveToWorkspace.2"
 
 [[hotkeys]]
-binding = "Option+4"
+binding = "LeftOption+4"
 id = "switchWorkspace.3"
 
 [[hotkeys]]
@@ -375,7 +376,7 @@ binding = "Option+Shift+4"
 id = "moveToWorkspace.3"
 
 [[hotkeys]]
-binding = "Option+5"
+binding = "LeftOption+5"
 id = "switchWorkspace.4"
 
 [[hotkeys]]
@@ -383,7 +384,7 @@ binding = "Option+Shift+5"
 id = "moveToWorkspace.4"
 
 [[hotkeys]]
-binding = "Option+6"
+binding = "LeftOption+6"
 id = "switchWorkspace.5"
 
 [[hotkeys]]
@@ -391,7 +392,7 @@ binding = "Option+Command+6"
 id = "moveToWorkspace.5"
 
 [[hotkeys]]
-binding = "Option+7"
+binding = "LeftOption+7"
 id = "switchWorkspace.6"
 
 [[hotkeys]]
@@ -399,7 +400,7 @@ binding = "Option+Command+7"
 id = "moveToWorkspace.6"
 
 [[hotkeys]]
-binding = "Option+8"
+binding = "LeftOption+8"
 id = "switchWorkspace.7"
 
 [[hotkeys]]
@@ -407,7 +408,7 @@ binding = "Option+Command+8"
 id = "moveToWorkspace.7"
 
 [[hotkeys]]
-binding = "Option+9"
+binding = "LeftOption+9"
 id = "switchWorkspace.8"
 
 [[hotkeys]]
