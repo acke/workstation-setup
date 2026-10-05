@@ -130,3 +130,6 @@ bindkey "^E"   end-of-line            # Ctrl+E / Cmd+Right
 
 alias lg="lazygit"
 alias my-prs="GITHUB_PRIVATE_TOKEN=\$(gh auth token) /Users/knut/repos/pr-status-monitor/target/release/my-prs"
+
+# rustup (homebrew keg-only formula ships shims here, not in ~/.cargo/bin)
+export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
