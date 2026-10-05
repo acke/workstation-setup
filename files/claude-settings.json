@@ -5,6 +5,8 @@
   },
   "permissions": {
     "allow": [
+      "Bash(claude stop *)",
+      "Bash(claude rm *)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -70,7 +72,8 @@
       "mcp__claude_ai_Google_Drive__list_recent_files",
       "mcp__claude_ai_Google_Drive__read_file_content",
       "mcp__claude_ai_Google_Drive__search_files",
-      "mcp__claude_ai_Google_Drive__download_file_content"
+      "mcp__claude_ai_Google_Drive__download_file_content",
+      "Skill(code-review)"
     ],
     "deny": [
       "Bash(rm -rf /)"
@@ -79,7 +82,7 @@
       "/tmp"
     ]
   },
-  "model": "sonnet",
+  "model": "opus",
   "hooks": {
     "SessionStart": [
       {
@@ -237,6 +240,10 @@
   "crossSessionInbound": "accept",
   "agentPushNotifEnabled": true,
   "autoMode": {
+    "allow": [
+      "$defaults",
+      "TEMPORARY, valid only on 2026-10-04: the user pre-authorized code reviews of open mackaby/talva-platform PRs, including running the code-review skill \n  and posting the findings as plain PR comments (`gh pr comment`). This does not cover formal GitHub reviews (`gh pr review \n  --approve/--request-changes`), merges, or pushes."
+    ],
     "environment": [
       "### Org-wide",
       "**Organization**: None configured",
