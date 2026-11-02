@@ -822,6 +822,17 @@ defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool t
 cp -f "${WORK_DIR}"/scripts/custom/shiftit-rectangle.plist ~/Library/Preferences/com.knollsoft.Rectangle.plist
 
 ###############################################################################
+# Login items                                                                 #
+###############################################################################
+
+# Start at login; skip apps already listed
+for app in /Applications/OmniWM.app /Applications/Alfred*.app; do
+	[ -d "${app}" ] || continue
+	name="$(basename "${app}" .app)"
+	osascript -e "tell application \"System Events\" to if not (exists login item \"${name}\") then make login item at end with properties {path:\"${app}\", hidden:false}"
+done
+
+###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 

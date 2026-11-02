@@ -65,7 +65,7 @@ brew install wireshark
 brew install zoom
 brew install tabbyml/tabby/tabby
 
-brew install --cask alfred@4
+brew install --cask alfred
 mas install 1091189122 # Bear notes (App Store only, no cask)
 brew install --cask visual-studio-code
 
