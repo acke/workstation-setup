@@ -53,6 +53,7 @@ brew install iterm2
 brew install keepassxc
 brew install keka
 brew install rectangle
+brew install --cask omniwm # tiling window manager, needs macOS 26+
 brew install signal
 brew install slack
 brew install spotify
@@ -65,10 +66,6 @@ brew install tabbyml/tabby/tabby
 
 brew install --cask alfred@4
 brew install --cask visual-studio-code
-
-echo
-echo "Adding Powerline fonts tap to Homebrew"
-brew tap homebrew/cask-fonts
 
 echo
 echo "Add font-hack-nerd-font"
