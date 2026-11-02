@@ -344,7 +344,9 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 
-defaults delete com.apple.dock && killall Dock
+# Reset Dock prefs. Don't killall Dock here — it relaunches and re-seeds
+# Apple's default apps over the writes below. Restarted at end of script.
+defaults delete com.apple.dock
 
 
 # Enable highlight hover effect for the grid view of a stack (Dock)
@@ -372,10 +374,12 @@ defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
 # Show indicator lights for open applications in the Dock
 defaults write com.apple.dock show-process-indicators -bool true
 
-# Wipe all (default) app icons from the Dock
-# This is only really useful when setting up a new Mac, or if you don’t use
-# the Dock to launch apps.
+# Dock contents: iTerm, then Applications and Downloads folders
 defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
+dockutil --add /Applications/iTerm.app --no-restart
+dockutil --add /Applications --view grid --display folder --no-restart
+dockutil --add "${HOME}/Downloads" --view fan --display stack --no-restart
 
 # Don't show only open applications in the Dock
 defaults write com.apple.dock static-only -bool false
@@ -411,8 +415,9 @@ defaults write com.apple.dock autohide -bool false
 # Make Dock icons of hidden applications translucent
 defaults write com.apple.dock showhidden -bool true
 
-# Show recent applications in Dock
-defaults write com.apple.dock show-recents -bool true
+# Don't show recent applications in Dock
+defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock recent-apps -array
 
 # Enable the Launchpad gesture (pinch with thumb and three fingers)
 defaults write com.apple.dock showLaunchpadGestureEnabled -int 1
