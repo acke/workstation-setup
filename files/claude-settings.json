@@ -1,211 +1,10 @@
 {
-  "$schema" : "https:\/\/json.schemastore.org\/claude-code-settings.json",
-  "agentPushNotifEnabled" : true,
-  "alwaysThinkingEnabled" : true,
-  "autoMode" : {
-    "allow" : [
-      "$defaults",
-      "TEMPORARY, valid only on 2026-10-04: the user pre-authorized code reviews of open mackaby\/talva-platform PRs, including running the code-review skill \n  and posting the findings as plain PR comments (`gh pr comment`). This does not cover formal GitHub reviews (`gh pr review \n  --approve\/--request-changes`), merges, or pushes."
-    ],
-    "environment" : [
-      "### Org-wide",
-      "**Organization**: None configured",
-      "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: Not queryable here (no origin remote in this repo — ~\/knut has zero tracked files and no remotes); assume private",
-      "**Internal sharing \/ snippet hosting**: None configured — treat public paste\/gist services as outside the trust boundary",
-      "**Secrets management**: None configured",
-      "**Default \/ protected branches**: Not queryable here (no origin remote, default branch unknown)",
-      "**CI\/CD deploy targets**: None configured",
-      "**Network posture**: None configured",
-      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
-      "**Source control**: The current directory (~\/knut) has no tracked files and no remotes configured — no source control context established",
-      "**Trusted internal domains**: None configured",
-      "**Trusted cloud buckets**: None configured — the bucket names found in repo-wide config scans (bucket, bucket_name, my-bucket, mybucket, etc.) are generic placeholder\/example names from documentation and skill templates, not usage-corroborated upload destinations",
-      "**Key internal services**: None configured",
-      "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
-      "**Data retention \/ declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
-      "**Protected deployment namespaces \/ environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development, plus product-management \/ GTM \/ customer-success \/ people-ops document generation via a personal skills library (CLAUDE.md agents & skills for PRDs, sprint planning, launch plans, 401k\/accommodation\/accessibility guides)",
-      "**Trusted repo**: The working directory ~\/knut has no tracked files and no configured git remotes — no trusted repo established here; treat any writes as local-only until a remote is added",
-      "**Org-specific CLIs**: None configured — frequently used personal CLIs observed in shell history include gog, hermes, z, hx, lg, openclaw, tailscale, lazygit (none org-specific)",
-      "**Routine under acke\/ prefix**: the user's own GitHub repos observed (acke\/hermes-backup, acke\/hermes-agent, acke\/watchtower-kb, acke\/talva-docs, acke\/jobs-tracker, acke\/genforeningen, acke\/agent-factory-specs, acke\/pr-status-monitor, acke\/goal-forge, acke\/brain, acke\/workstation-setup, acke\/talva-doc-skills) are candidate personal-repo context but unverified for this session since scope is just this project"
-    ]
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "ENABLE_TOOL_SEARCH": "true"
   },
-  "crossSessionInbound" : "accept",
-  "editorMode" : "vim",
-  "effortLevel" : "high",
-  "enabledPlugins" : {
-    "gopls-lsp@claude-plugins-official" : true,
-    "jev-rust-review@jev-rust-review" : true,
-    "rust-analyzer-lsp@claude-plugins-official" : true,
-    "typesafe@typesafe-ai" : true
-  },
-  "env" : {
-    "ENABLE_TOOL_SEARCH" : "true"
-  },
-  "extraKnownMarketplaces" : {
-    "jev-rust-review" : {
-      "source" : {
-        "repo" : "kindintelligence\/jev-rust-review",
-        "source" : "github"
-      }
-    },
-    "typesafe-ai" : {
-      "source" : {
-        "repo" : "typesafe-ai\/skills",
-        "source" : "github"
-      }
-    }
-  },
-  "hooks" : {
-    "Notification" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "PostToolUse" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "PreToolUse" : [
-      {
-        "hooks" : [
-          {
-            "command" : "$HOME\/.claude\/hooks\/usage-guard.sh",
-            "statusMessage" : "Checking usage window",
-            "timeout" : 5,
-            "type" : "command"
-          }
-        ],
-        "matcher" : "*"
-      },
-      {
-        "hooks" : [
-          {
-            "command" : "$HOME\/.claude\/hooks\/pre-push.sh",
-            "if" : "Bash(git push*)",
-            "statusMessage" : "Running make pre-push",
-            "timeout" : 600,
-            "type" : "command"
-          }
-        ],
-        "matcher" : "Bash"
-      },
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "SessionEnd" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "SessionStart" : [
-      {
-        "hooks" : [
-          {
-            "command" : "git -C \"$HOME\/.claude\/brain\" pull --rebase --autostash --quiet origin main >\/dev\/null 2>&1 || true",
-            "type" : "command"
-          }
-        ],
-        "matcher" : ""
-      },
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "Stop" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "StopFailure" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "SubagentStop" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit" : [
-      {
-        "hooks" : [
-          {
-            "command" : "\/Users\/skipper\/.config\/iterm2\/cc-status",
-            "type" : "command"
-          }
-        ]
-      }
-    ]
-  },
-  "model" : "opus",
-  "modelSettings" : {
-    "claude-sonnet-5" : {
-      "effortLevel" : "medium"
-    }
-  },
-  "permissions" : {
-    "additionalDirectories" : [
-      "\/tmp"
-    ],
-    "allow" : [
+  "permissions": {
+    "allow": [
       "Bash(claude stop *)",
       "Bash(claude rm *)",
       "Bash(git status:*)",
@@ -249,14 +48,14 @@
       "Bash(true)",
       "Bash(false)",
       "Bash(test:*)",
-      "Bash(\/usr\/bin\/grep:*)",
-      "Bash(\/usr\/bin\/find:*)",
-      "Bash(\/usr\/bin\/sed:*)",
-      "Bash(\/usr\/bin\/awk:*)",
-      "Bash(\/bin\/cat:*)",
-      "Bash(\/bin\/ls:*)",
-      "Bash(\/usr\/bin\/head:*)",
-      "Bash(\/usr\/bin\/tail:*)",
+      "Bash(/usr/bin/grep:*)",
+      "Bash(/usr/bin/find:*)",
+      "Bash(/usr/bin/sed:*)",
+      "Bash(/usr/bin/awk:*)",
+      "Bash(/bin/cat:*)",
+      "Bash(/bin/ls:*)",
+      "Bash(/usr/bin/head:*)",
+      "Bash(/usr/bin/tail:*)",
       "mcp__claude_ai_Gmail__get_message",
       "mcp__claude_ai_Gmail__get_thread",
       "mcp__claude_ai_Gmail__search_threads",
@@ -276,66 +75,186 @@
       "mcp__claude_ai_Google_Drive__download_file_content",
       "Skill(code-review)"
     ],
-    "deny" : [
-      "Bash(rm -rf \/)"
+    "deny": [
+      "Bash(rm -rf /)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   },
-  "preferredNotifChannel" : "iterm2_with_bell",
-  "remoteControlAtStartup" : true,
-  "sandbox" : {
-    "autoAllowBashIfSandboxed" : true,
-    "enabled" : true,
-    "enableWeakerNetworkIsolation" : true,
-    "excludedCommands" : [
-      "git",
-      "gh",
-      "bd",
-      "gt"
+  "model": "opus",
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
     ],
-    "failIfUnavailable" : true,
-    "filesystem" : {
-      "allowWrite" : [
-        "~\/.cache",
-        "~\/Library\/Caches",
-        "~\/.local\/share",
-        "~\/.local\/state",
-        "~\/go",
-        "~\/.cargo\/registry",
-        "~\/.cargo\/git",
-        "~\/.npm",
-        "~\/.yarn",
-        "~\/.pnpm-store",
-        "~\/.bun",
-        "~\/.asdf\/installs",
-        "~\/.asdf\/shims",
-        "~\/.asdf\/plugins",
-        "~\/.claude\/brain"
-      ],
-      "denyWrite" : [
-        "~\/.ssh",
-        "~\/.aws",
-        "~\/.gnupg",
-        "~\/.config\/gh\/hosts.yml",
-        "~\/.zsh_history",
-        "~\/.bash_history",
-        "~\/.npmrc",
-        "~\/.yarnrc",
-        "~\/.yarnrc.yml",
-        "~\/.pypirc",
-        "~\/.netrc",
-        "~\/.docker\/config.json",
-        "~\/.kube\/config",
-        "~\/.cargo\/credentials.toml",
-        "~\/Library\/Application Support\/Google\/Chrome",
-        "~\/Library\/Application Support\/Firefox",
-        "~\/Library\/Cookies",
-        "~\/Library\/Keychains",
-        "~\/Library\/Mail",
-        "~\/Library\/Messages"
-      ]
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/usage-guard.sh",
+            "timeout": 5,
+            "statusMessage": "Checking usage window"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/pre-push.sh",
+            "if": "Bash(git push*)",
+            "timeout": 600,
+            "statusMessage": "Running make pre-push"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git -C \"$HOME/.claude/brain\" pull --rebase --autostash --quiet origin main >/dev/null 2>&1 || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/skipper/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/hooks/statusline-tee.sh",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "jev-rust-review@jev-rust-review": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "typesafe@typesafe-ai": true,
+    "ribbon@robonuggets": true
+  },
+  "extraKnownMarketplaces": {
+    "jev-rust-review": {
+      "source": {
+        "source": "github",
+        "repo": "kindintelligence/jev-rust-review"
+      }
     },
-    "network" : {
-      "allowedDomains" : [
+    "typesafe-ai": {
+      "source": {
+        "source": "github",
+        "repo": "typesafe-ai/skills"
+      }
+    },
+    "robonuggets": {
+      "source": {
+        "source": "github",
+        "repo": "robonuggets/ribbon"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": true,
+    "network": {
+      "allowedDomains": [
         "proxy.golang.org",
         "sum.golang.org",
         "golang.org",
@@ -353,19 +272,107 @@
         "api.github.com",
         "raw.githubusercontent.com"
       ],
-      "allowUnixSockets" : [
-        "\/var\/run\/docker.sock"
+      "allowUnixSockets": [
+        "/var/run/docker.sock"
       ]
+    },
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache",
+        "~/Library/Caches",
+        "~/.local/share",
+        "~/.local/state",
+        "~/go",
+        "~/.cargo/registry",
+        "~/.cargo/git",
+        "~/.npm",
+        "~/.yarn",
+        "~/.pnpm-store",
+        "~/.bun",
+        "~/.asdf/installs",
+        "~/.asdf/shims",
+        "~/.asdf/plugins",
+        "~/.claude/brain"
+      ],
+      "denyWrite": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.config/gh/hosts.yml",
+        "~/.zsh_history",
+        "~/.bash_history",
+        "~/.npmrc",
+        "~/.yarnrc",
+        "~/.yarnrc.yml",
+        "~/.pypirc",
+        "~/.netrc",
+        "~/.docker/config.json",
+        "~/.kube/config",
+        "~/.cargo/credentials.toml",
+        "~/Library/Application Support/Google/Chrome",
+        "~/Library/Application Support/Firefox",
+        "~/Library/Cookies",
+        "~/Library/Keychains",
+        "~/Library/Mail",
+        "~/Library/Messages"
+      ]
+    },
+    "enableWeakerNetworkIsolation": true,
+    "excludedCommands": [
+      "git",
+      "gh",
+      "bd",
+      "gt"
+    ]
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "medium"
     }
   },
-  "statusLine" : {
-    "command" : "$HOME\/.claude\/hooks\/statusline-tee.sh",
-    "padding" : 0,
-    "type" : "command"
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true
   },
-  "theme" : "auto",
-  "tui" : "fullscreen",
-  "voice" : {
-    "enabled" : true
+  "theme": "auto",
+  "editorMode": "vim",
+  "preferredNotifChannel": "iterm2_with_bell",
+  "remoteControlAtStartup": true,
+  "crossSessionInbound": "accept",
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "TEMPORARY, valid only on 2026-10-04: the user pre-authorized code reviews of open mackaby/talva-platform PRs, including running the code-review skill \n  and posting the findings as plain PR comments (`gh pr comment`). This does not cover formal GitHub reviews (`gh pr review \n  --approve/--request-changes`), merges, or pushes."
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: Not queryable here (no origin remote in this repo — ~/knut has zero tracked files and no remotes); assume private",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: Not queryable here (no origin remote, default branch unknown)",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
+      "**Source control**: The current directory (~/knut) has no tracked files and no remotes configured — no source control context established",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured — the bucket names found in repo-wide config scans (bucket, bucket_name, my-bucket, mybucket, etc.) are generic placeholder/example names from documentation and skill templates, not usage-corroborated upload destinations",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development, plus product-management / GTM / customer-success / people-ops document generation via a personal skills library (CLAUDE.md agents & skills for PRDs, sprint planning, launch plans, 401k/accommodation/accessibility guides)",
+      "**Trusted repo**: The working directory ~/knut has no tracked files and no configured git remotes — no trusted repo established here; treat any writes as local-only until a remote is added",
+      "**Org-specific CLIs**: None configured — frequently used personal CLIs observed in shell history include gog, hermes, z, hx, lg, openclaw, tailscale, lazygit (none org-specific)",
+      "**Routine under acke/ prefix**: the user's own GitHub repos observed (acke/hermes-backup, acke/hermes-agent, acke/watchtower-kb, acke/talva-docs, acke/jobs-tracker, acke/genforeningen, acke/agent-factory-specs, acke/pr-status-monitor, acke/goal-forge, acke/brain, acke/workstation-setup, acke/talva-doc-skills) are candidate personal-repo context but unverified for this session since scope is just this project"
+    ]
   }
 }
