@@ -58,6 +58,7 @@ brew install signal
 brew install slack
 brew install spotify
 brew install sublime-text
+brew install --cask warp # terminal
 brew install tuple
 brew install visual-studio-code
 brew install wireshark
@@ -65,6 +66,7 @@ brew install zoom
 brew install tabbyml/tabby/tabby
 
 brew install --cask alfred@4
+mas install 1091189122 # Bear notes (App Store only, no cask)
 brew install --cask visual-studio-code
 
 echo
