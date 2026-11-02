@@ -3,10 +3,11 @@ set +e
 echo
 echo 'Customizing OS X configuration'
 
-# set menu clock
-# see http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-defaults write com.apple.menuextra.clock "DateFormat" 'EEE MMM d  H:mm a'
-killall SystemUIServer
+# set menu clock: weekday, date, 24h time (DateFormat is ignored since macOS 13)
+defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
+defaults write com.apple.menuextra.clock ShowDate -int 1
+defaults write com.apple.menuextra.clock Show24Hour -bool true
+killall ControlCenter
 
 # hide the dock
 defaults write com.apple.dock autohide -bool true
@@ -24,14 +25,14 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 #to revert use defaults -currentHost delete com.apple.ImageCapture disableHotPlug
 
 
-# modify appearance of dock: remove standard icons, add chrome and iTerm
-if [ ! -e /usr/local/bin/dockutil ]; then
-    curl https://raw.githubusercontent.com/kcrawford/dockutil/master/scripts/dockutil > /usr/local/bin/dockutil
-fi
-chmod a+rx,go-w /usr/local/bin/dockutil
-dockutil --list | awk -F\t '{print "dockutil --remove \""$1"\" --no-restart"}' | sh
-dockutil --add /Applications/Google\ Chrome.app --no-restart
-dockutil --add /Applications/iTerm.app
+# add chrome and iTerm to the dock (keeps existing icons)
+brew install dockutil
+for app in "/Applications/Google Chrome.app" "/Applications/iTerm.app"; do
+  if [ -d "$app" ] && ! dockutil --find "$(basename "$app" .app)" >/dev/null 2>&1; then
+    dockutil --add "$app" --no-restart
+  fi
+done
+killall Dock
 
 # Force Preference Refresh
 killall -u $USER cfprefsd
@@ -41,8 +42,10 @@ echo "Configuring iTerm"
 cp files/com.googlecode.iterm2.plist ~/Library/Preferences
 
 echo "Configuring Rectangle"
-cp files/com.knollsoft.Rectangle.plist ~/Library/Preferences/com.knollsoft.Rectangle.plist
-open /Applications/Rectangle.app
+if [ -d /Applications/Rectangle.app ]; then
+  cp files/com.knollsoft.Rectangle.plist ~/Library/Preferences/com.knollsoft.Rectangle.plist
+  open /Applications/Rectangle.app
+fi
 
 echo "Configuring FlyCut"
-open /Applications/Flycut.app
+[ -d /Applications/Flycut.app ] && open /Applications/Flycut.app

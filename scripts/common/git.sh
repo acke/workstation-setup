@@ -4,12 +4,9 @@ brew install git
 
 echo
 echo "Setting global Git configurations"
-git config --global core.editor /usr/local/bin/vim
+git config --global core.editor hx
 git config --global transfer.fsckobjects true
-
-mkdir -p ~/.git_templates
-git config --global init.templateDir ~/.git_templates
-echo "ref: refs/heads/main" > ~/.git_templates/HEAD
+git config --global init.defaultBranch main
 
 echo "Installing pair programming git attribution tools"
 brew tap git-duet/tap
