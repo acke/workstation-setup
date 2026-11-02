@@ -8,7 +8,9 @@ echo "Uncomment other editors and rerun if you want them"
 brew install --cask visual-studio-code
 brew install vim
 brew install hx
-brew install claude-code
+brew install --cask claude-code
+# ribbon: usage-left and prompt-cache band above the Claude Code prompt
+claude plugin install ribbon --marketplace robonuggets/ribbon
 
 echo
 echo "Other editors are available in this script."
