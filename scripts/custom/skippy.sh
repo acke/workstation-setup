@@ -40,7 +40,7 @@ brew install tilt
 # For developers
 brew install jq # json parsing
 brew install fnm goreleaser go@1.22 go helm htop httpie kubernetes-cli lua
-brew install ack helix mitmproxy neovim nmap ruby teleport
+brew install ack helix mitmproxy neovim nmap ruby
 brew install xh xz
 brew install bitwarden
 brew install clocker

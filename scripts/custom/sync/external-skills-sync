@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sync bastiandoetsch/skills-and-agents into ~/.claude and ~/.cursor as symlinks.
-# Precedence: snyk/ide-tools wins. A Bastian skill/agent is only linked if no
+# A Bastian skill/agent is only linked if no
 # target with that name already exists. Re-run safely; idempotent.
 #
 # Layout (Bastian):
@@ -24,15 +24,6 @@ VERBOSE="${BASTIAN_SYNC_VERBOSE:-0}"
 SUMMARY="${BASTIAN_SYNC_SUMMARY:-1}"
 LINKED=0
 SKIPPED=0
-REMOVED=0
-
-# Snyk skill names to deactivate because Bastian's equivalent (under a different
-# name) is preferred. Removes the snyk symlinks from ~/.claude/skills and
-# ~/.cursor/skills after the link pass. Re-run safe.
-OVERRIDDEN_SNYK_SKILLS=(
-  "implementation"               # use bastian/impl-core instead
-  "create-implementation-plan"   # use bastian/plan-core instead
-)
 
 log()  { [ "$VERBOSE" = "1" ] && printf '%s\n' "$*" >&2; return 0; }
 warn() { printf 'external-skills-sync: %s\n' "$*" >&2; }
@@ -51,7 +42,7 @@ fi
 mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CLAUDE_AGENTS"
 
 # link_one <src> <dst>
-# Symlink src -> dst. If dst already exists and is not our symlink, skip (snyk wins).
+# Symlink src -> dst. If dst already exists and is not our symlink, skip.
 link_one() {
   local src="$1" dst="$2"
   if [ -L "$dst" ]; then
@@ -59,12 +50,12 @@ link_one() {
       log "ok:    $dst"
       return 0
     fi
-    log "skip:  $dst (other symlink — snyk wins)"
+    log "skip:  $dst (other symlink)"
     SKIPPED=$((SKIPPED + 1))
     return 0
   fi
   if [ -e "$dst" ]; then
-    log "skip:  $dst (real file/dir — snyk wins)"
+    log "skip:  $dst (real file/dir)"
     SKIPPED=$((SKIPPED + 1))
     return 0
   fi
@@ -94,17 +85,5 @@ if [ -d "$REPO/agents" ]; then
   done
 fi
 
-# Remove snyk symlinks that we want Bastian's version to supersede.
-for name in "${OVERRIDDEN_SNYK_SKILLS[@]}"; do
-  for root in "$CLAUDE_SKILLS" "$CURSOR_SKILLS"; do
-    dst="$root/$name"
-    if [ -L "$dst" ]; then
-      rm "$dst"
-      REMOVED=$((REMOVED + 1))
-      log "remove: $dst (overridden by bastian)"
-    fi
-  done
-done
-
-[ "$SUMMARY" = "1" ] && printf 'external-skills-sync: linked=%d skipped=%d removed=%d\n' "$LINKED" "$SKIPPED" "$REMOVED" >&2
+[ "$SUMMARY" = "1" ] && printf 'external-skills-sync: linked=%d skipped=%d\n' "$LINKED" "$SKIPPED" >&2
 exit 0

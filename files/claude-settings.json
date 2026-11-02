@@ -128,7 +128,6 @@
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
-    "skill-usage@snyk-internal": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typesafe@typesafe-ai": true,
     "jev-rust-review@jev-rust-review": true
