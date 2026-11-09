@@ -69,6 +69,9 @@ To install any of these, add them as arguments to `$> setup.sh`. Examples:
 # Common for Spring Boot development
 ./setup.sh java spring-boot docker
 
+# Neo4j work tools (Cursor, Linear, Codex, GoLand, Grammarly, VS Code)
+./setup.sh neo4j
+
 # Lots of languages
 ./setup.sh java ruby node golang python c
 
