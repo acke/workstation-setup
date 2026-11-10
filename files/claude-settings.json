@@ -227,7 +227,15 @@
     "jev-rust-review@jev-rust-review": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typesafe@typesafe-ai": true,
-    "ribbon@robonuggets": true
+    "ribbon@robonuggets": true,
+    "neo4j-skills@neo4j-skills-marketplace": true,
+    "warp@claude-code-warp": true,
+    "linear-pack@claude-code-plugins-plus": true,
+    "cli-ux-tester@claude-code-plugins-plus": true,
+    "contract-test-validator@claude-code-plugins-plus": true,
+    "api-fuzzer@claude-code-plugins-plus": true,
+    "api-test-automation@claude-code-plugins-plus": true,
+    "code-cleanup@claude-code-plugins-plus": true
   },
   "extraKnownMarketplaces": {
     "jev-rust-review": {
@@ -246,6 +254,24 @@
       "source": {
         "source": "github",
         "repo": "robonuggets/ribbon"
+      }
+    },
+    "neo4j-skills-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/neo4j-contrib/neo4j-skills.git"
+      }
+    },
+    "claude-code-warp": {
+      "source": {
+        "source": "github",
+        "repo": "warpdotdev/claude-code-warp"
+      }
+    },
+    "claude-code-plugins-plus": {
+      "source": {
+        "source": "github",
+        "repo": "jeremylongshore/claude-code-plugins"
       }
     }
   },
