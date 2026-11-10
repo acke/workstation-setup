@@ -76,3 +76,33 @@ if [ -d "$AGENT_SKILLS" ]; then
     link_claude "$agent" "$HOME/.claude/agents/$(basename "$agent")"
   done
 fi
+
+# skills-and-agents: skills, agents and workflows (reflect, brain, unslop, ...)
+# synced by scripts/custom/sync/skills-and-agents-sync, which skips Snyk-bound
+# items and never links hooks. The shell also runs it daily (files/zshrc).
+echo
+echo "Syncing skills-and-agents"
+
+SKILLS_AND_AGENTS="$HOME/repos/skills-and-agents"
+
+if [ ! -d "$SKILLS_AND_AGENTS" ]; then
+  git clone git@github.com:acke/skills-and-agents.git "$SKILLS_AND_AGENTS" ||
+    echo "agents-skill-setup: could not clone skills-and-agents, skipping" >&2
+fi
+
+if [ -d "$SKILLS_AND_AGENTS" ]; then
+  bash "${WORK_DIR}/scripts/custom/sync/skills-and-agents-sync"
+
+  # Hooks are linked one by one after review, and registered in
+  # files/claude-settings.json. Add a name here only after reading the hook.
+  for hook in \
+    block-gh-admin.sh \
+    block-no-verify.sh \
+    no-deflection.py \
+    post-push-reflect-trigger.sh \
+    session-start-load-unslop.sh \
+    warn-no-test-evidence.py
+  do
+    link_claude "$SKILLS_AND_AGENTS/hooks/$hook" "$HOME/.claude/hooks/$hook"
+  done
+fi
