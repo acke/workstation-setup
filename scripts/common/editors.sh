@@ -9,6 +9,7 @@ brew install --cask visual-studio-code
 brew install vim
 brew install hx
 brew install --cask claude-code
+brew install codex
 
 echo
 echo "Other editors are available in this script."
