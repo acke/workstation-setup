@@ -24,6 +24,7 @@ source ${WORK_DIR}/scripts/common/homebrew.sh
 # Install everything else
 source ${WORK_DIR}/scripts/common/oh-my-zsh.sh
 source ${WORK_DIR}/scripts/common/editors.sh
+source ${WORK_DIR}/scripts/common/agents-skill-setup.sh
 source ${WORK_DIR}/scripts/common/git.sh
 source ${WORK_DIR}/scripts/common/git-aliases.sh
 source ${WORK_DIR}/scripts/common/developer-utilities.sh
