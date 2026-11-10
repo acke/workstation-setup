@@ -2,6 +2,8 @@ echo
 echo "Installing most recent version of NodeJS"
 
 brew install node
+# pnpm: needed to build/verify jeremylongshore/claude-code-plugins (Node >=22.12.0, pnpm >=9.15.9)
+brew install pnpm
 
 echo
 echo "Installing global NodeJS Packages"
