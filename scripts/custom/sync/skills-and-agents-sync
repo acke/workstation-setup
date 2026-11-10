@@ -7,12 +7,18 @@
 #   skills/<name>/SKILL.md   -> ~/.claude/skills/<name> + ~/.cursor/skills/<name>
 #   agents/<name>.md         -> ~/.claude/agents/<name>.md
 #   workflows/<name>.js      -> ~/.claude/workflows/<name>.js
-#   hooks/<name>.sh|.py      -> ~/.claude/hooks/<name>
+#
+# Hooks are never synced: review each one and link it by hand, then register
+# it in files/claude-settings.json.
+#
+# Snyk-bound items are skipped (SKILLS_AND_AGENTS_SKIP, space-separated names:
+# skill dir, agent/workflow file name).
 #
 # Env:
 #   SKILLS_AND_AGENTS_REPO    path to clone (default: ~/repos/skills-and-agents)
 #   SKILLS_AND_AGENTS_PULL=0  skip the git pull step (default: 1 = pull)
 #   SKILLS_AND_AGENTS_VERBOSE=1  log every link/skip
+#   SKILLS_AND_AGENTS_SKIP    names not to link (default: the Snyk-bound list below)
 
 set -u
 
@@ -21,7 +27,14 @@ CLAUDE_SKILLS="$HOME/.claude/skills"
 CURSOR_SKILLS="$HOME/.cursor/skills"
 CLAUDE_AGENTS="$HOME/.claude/agents"
 CLAUDE_WORKFLOWS="$HOME/.claude/workflows"
-CLAUDE_HOOKS="$HOME/.claude/hooks"
+
+SKIP="${SKILLS_AND_AGENTS_SKIP:-\
+log-comparison review-bench review-panel customer-support-triage customer-support-triage.js \
+verification analyse-log-files sprint-autopilot sprint-autopilot-workspace capture-requirements \
+flake-fix-loop address-all-pr-reviews address-pr-review run-check-loops ci-watch pr-review-sweep \
+ide-triage-loop create-review-skill commit adr sync-harness-wiki \
+qodo-codebase-wisdom qodo-get-rules qodo-review qodo-review-resolver zscaler-docker-certs \
+security-scan.md semantic-analysis.md}"
 
 VERBOSE="${SKILLS_AND_AGENTS_VERBOSE:-0}"
 LINKED=0
@@ -40,10 +53,16 @@ if [ "${SKILLS_AND_AGENTS_PULL:-1}" = "1" ] && [ -e "$REPO/.git" ]; then
   fi
 fi
 
-mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CLAUDE_AGENTS" "$CLAUDE_WORKFLOWS" "$CLAUDE_HOOKS"
+mkdir -p "$CLAUDE_SKILLS" "$CURSOR_SKILLS" "$CLAUDE_AGENTS" "$CLAUDE_WORKFLOWS"
 
 link_one() {
   local src="$1" dst="$2"
+  case " $SKIP " in
+    *" $(basename "$src") "*)
+      log "skip:  $dst (snyk-bound)"
+      SKIPPED=$((SKIPPED + 1))
+      return 0 ;;
+  esac
   if [ -L "$dst" ]; then
     if [ "$(readlink "$dst")" = "$src" ]; then
       log "ok:    $dst"
@@ -90,15 +109,6 @@ if [ -d "$REPO/workflows" ]; then
     [ -f "$f" ] || continue
     name="$(basename "$f")"
     link_one "$f" "$CLAUDE_WORKFLOWS/$name"
-  done
-fi
-
-# Hooks (Claude only)
-if [ -d "$REPO/hooks" ]; then
-  for f in "$REPO/hooks"/*.sh "$REPO/hooks"/*.py; do
-    [ -f "$f" ] || continue
-    name="$(basename "$f")"
-    link_one "$f" "$CLAUDE_HOOKS/$name"
   done
 fi
 

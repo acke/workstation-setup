@@ -56,6 +56,11 @@ link_claude() {
   echo "agents-skill-setup: linked $dst -> $src"
 }
 
+# The brain and reflect skills and the SessionStart hook read ~/.claude/brain.
+if [ -d "$HOME/repos/brain" ] && [ ! -e "$HOME/.claude/brain" ]; then
+  link_claude "$HOME/repos/brain" "$HOME/.claude/brain"
+fi
+
 if [ -d "$AGENT_SKILLS" ]; then
   for category in "$AGENT_SKILLS"/skills/*/; do
     category="${category%/}"
