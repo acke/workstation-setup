@@ -112,6 +112,20 @@
             "command": "/Users/skipper/.config/iterm2/cc-status"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/post-push-reflect-trigger.sh",
+            "timeout": 5,
+            "statusMessage": "Queuing reflect after push...",
+            "asyncRewake": true,
+            "rewakeMessage": "A git push just completed. Please invoke the /reflect skill now to capture learnings from this session.",
+            "rewakeSummary": "git push done — invoking /reflect"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -135,6 +149,23 @@
             "if": "Bash(git push*)",
             "timeout": 600,
             "statusMessage": "Running make pre-push"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/block-no-verify.sh",
+            "timeout": 5,
+            "statusMessage": "Checking for bypass flags..."
+          },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/block-gh-admin.sh",
+            "timeout": 5,
+            "statusMessage": "Checking for --admin flag..."
           }
         ]
       },
@@ -171,12 +202,32 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/session-start-load-unslop.sh\"",
+            "timeout": 5,
+            "statusMessage": "Loading unslop skill..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "/Users/skipper/.config/iterm2/cc-status"
           }
         ]
       }
     ],
     "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $HOME/.claude/hooks/no-deflection.py",
+            "timeout": 10,
+            "statusMessage": "Checking for deflection..."
+          }
+        ]
+      },
       {
         "hooks": [
           {
@@ -207,6 +258,16 @@
       }
     ],
     "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/warn-no-test-evidence.py",
+            "timeout": 10
+          }
+        ]
+      },
       {
         "hooks": [
           {
