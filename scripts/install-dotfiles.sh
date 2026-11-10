@@ -7,10 +7,6 @@
 #
 # To track a new dotfile: drop it under files/ and add a "src:dst" entry to
 # LINKS below.
-#
-# Also clones acke/agent-skills to ~/repos/agent-skills (if missing) and links
-# its skills/<category>/<skill>/ into ~/.claude/skills and agents/*.md into
-# ~/.claude/agents. `git pull` in that repo updates them.
 
 set -u
 
@@ -52,18 +48,3 @@ link() {
 for pair in "${LINKS[@]}"; do
   link "$SRC/${pair%%:*}" "$HOME/${pair##*:}"
 done
-
-AGENT_SKILLS="$HOME/repos/agent-skills"
-if [ ! -d "$AGENT_SKILLS" ]; then
-  git clone git@github.com:acke/agent-skills.git "$AGENT_SKILLS" ||
-    echo "install-dotfiles: could not clone agent-skills, skipping" >&2
-fi
-if [ -d "$AGENT_SKILLS" ]; then
-  for d in "$AGENT_SKILLS"/skills/*/*/; do
-    d="${d%/}"
-    link "$d" "$HOME/.claude/skills/$(basename "$d")"
-  done
-  for f in "$AGENT_SKILLS"/agents/*.md; do
-    link "$f" "$HOME/.claude/agents/$(basename "$f")"
-  done
-fi

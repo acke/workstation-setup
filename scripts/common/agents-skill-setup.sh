@@ -26,3 +26,48 @@ do
 done
 # Not installed: pr-to-spec (bundled MCP server that receives GITHUB_TOKEN),
 # conversational-api-debugger and project-health-auditor (bundled MCP servers).
+
+# agent-skills: personal skills and agents, symlinked into ~/.claude. Every
+# category under skills/ is linked except those in AGENT_SKILLS_SKIP
+# (space-separated, default: gaming). `git pull` in the repo updates them.
+echo
+echo "Linking skills and agents from agent-skills"
+
+AGENT_SKILLS="$HOME/repos/agent-skills"
+AGENT_SKILLS_SKIP="${AGENT_SKILLS_SKIP:-gaming}"
+
+if [ ! -d "$AGENT_SKILLS" ]; then
+  git clone git@github.com:acke/agent-skills.git "$AGENT_SKILLS" ||
+    echo "agents-skill-setup: could not clone agent-skills, skipping" >&2
+fi
+
+# link_claude <src> <dst>: symlink, backing up anything already at <dst>
+link_claude() {
+  local src="$1" dst="$2"
+  mkdir -p "$(dirname "$dst")"
+  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+    return
+  fi
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    cp -R "$dst" "$dst.bak.$(date +%Y.%m.%d_%H-%M-%S)" 2>/dev/null
+    rm -rf "$dst"
+  fi
+  ln -s "$src" "$dst"
+  echo "agents-skill-setup: linked $dst -> $src"
+}
+
+if [ -d "$AGENT_SKILLS" ]; then
+  for category in "$AGENT_SKILLS"/skills/*/; do
+    category="${category%/}"
+    case " $AGENT_SKILLS_SKIP " in
+      *" $(basename "$category") "*) continue ;;
+    esac
+    for skill in "$category"/*/; do
+      skill="${skill%/}"
+      link_claude "$skill" "$HOME/.claude/skills/$(basename "$skill")"
+    done
+  done
+  for agent in "$AGENT_SKILLS"/agents/*.md; do
+    link_claude "$agent" "$HOME/.claude/agents/$(basename "$agent")"
+  done
+fi
