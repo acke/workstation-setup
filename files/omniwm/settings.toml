@@ -3,7 +3,7 @@ monitorDwindleOverrides = []
 monitorGapOverrides = []
 monitorNiriOverrides = []
 monitorOrientationOverrides = []
-schemaVersion = 3
+schemaVersion = 4
 
 [appearance]
 mode = "dark"
@@ -54,6 +54,7 @@ right = 10.0
 top = 10.0
 
 [general]
+animationSpeed = 1.0
 animationsEnabled = true
 defaultLayoutType = "niri"
 hotkeysEnabled = true
@@ -97,11 +98,14 @@ margin = 1
 alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
 containerPrimarySpanPresets = [0.33, 0.5]
+edgeGaps = true
 infiniteLoop = false
+resizeStepPercent = 5
 singleWindowFit = "1920x1080"
 visibleContainerCount = 3
 
 [overview]
+enabled = true
 invertScrollDirection = false
 matchFocusBorder = true
 mouseScrollSpeed = 1.0
@@ -155,19 +159,26 @@ mode = "macOS"
 
 [statusBar]
 showAppNames = true
+showIcon = true
 showWorkspaceName = true
 useWorkspaceId = true
 
 [workspaceBar]
+autoHide = false
+autoHideHideDelayMilliseconds = 0.0
+autoHideRevealDelayMilliseconds = 0.0
 backgroundOpacity = 0.1
 deduplicateAppIcons = false
-enabled = false
+enabled = true
 excludedBundleIDs = []
 height = 24.0
 hideEmptyWorkspaces = false
 hideInNativeFullscreen = false
+hoverPreviewsEnabled = true
 notchActiveZoneWidth = 180.0
 notchMode = "moveBelowMenuBar"
+notificationBadgeRefreshIntervalSeconds = 5.0
+notificationBadges = "off"
 position = "overlappingMenuBar"
 reserveLayoutSpace = false
 revealHoldMilliseconds = 200.0
@@ -977,6 +988,10 @@ id = "raiseAllFloatingWindows"
 
 [[hotkeys]]
 binding = "Unassigned"
+id = "toggleFloatingFocus"
+
+[[hotkeys]]
+binding = "Unassigned"
 id = "rescueOffscreenWindows"
 
 [[hotkeys]]
@@ -990,6 +1005,14 @@ id = "closeFocusedWindow"
 [[hotkeys]]
 binding = "Control+Option+Space"
 id = "openMenuAnywhere"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "setWindowMark"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "removeWindowMark"
 
 [[hotkeys]]
 binding = "Option+Command+Space"
