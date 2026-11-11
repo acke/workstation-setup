@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2026 OmniNull — https://github.com/OmniNull/OmniWM
+
+theme = "native"
+leading = ["workspaces"]
+center = []
+trailing = []
+hiddenBarWidget = "hidden-bar"
+systemStatsWidget = "system-stats"
+
+[island]
+root = "focus-ribbon"
+displays = "all"
+width = 620
+height = 200
+fullscreen = "hide"
+
+[workspaceBar]
+position = "belowMenuBar"
+height = 24
+fullWidth = false
+reserveLayoutSpace = true
+transparentBackground = false
+backgroundOpacity = 0
+showItemBackgrounds = false
+showAccentHighlights = true
+solidBlackBackground = false
+showLabels = true
+xOffset = 0
+yOffset = 0
+systemStatsButton = true
