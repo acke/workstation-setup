@@ -29,7 +29,10 @@ When reporting information back, be extremely concise. Sacrifice grammar for con
 
 ## PR Workflow
 
-- Local launchd jobs `com.knut.pr-review-watch` and `com.knut.pr-review-inbox` (source: `~/repos/agent-skills/claude-tools/{pr-review-watch,pr-review-inbox}/`) already poll GitHub every 15 min for PR review activity across tracked repos (currently `mackaby/talva-platform`, `acke/talva-docs`) — own-PR incoming reviews and others'-PR review requests respectively. Check `~/Library/LaunchAgents/com.knut.pr-review-*.plist` and that dir's `state.json`/`CLAUDE.md` before assuming a PR review needs manual polling, a webhook, or a new cron — it's almost certainly already covered.
+- PR review jobs live in `~/repos/agent-skills/claude-tools/`, installed per machine as launchd agents. Run `launchctl list | grep pr-review` first: not every machine loads every job, and none is guaranteed to be running.
+  - `com.knut.neo-pr-review` (`neo-pr-review/`): Dev Surface repos from its `repos.conf`. New review comments on own PRs spawn a fix session; direct review requests spawn a session that asks before reviewing. Paths derive from `$HOME`, so it installs anywhere.
+  - `com.knut.pr-review-watch` (own PRs) and `com.knut.pr-review-inbox` (others' PRs): `mackaby/talva-platform`, `acke/talva-docs`. Paths hardcode `/Users/knut`, so they only work on that machine.
+  - A loaded job's `state.json`/`CLAUDE.md` says what it already covers; check before assuming a PR review needs manual polling, a webhook, or a new cron.
 - When addressing PR review comments: address each one, reply inline, then commit and push. Run lint and tests locally before pushing to avoid CI churn.
 - When user asks for multiple logically-distinct changes, default to stacked/separate PRs unless told otherwise.
 - For Datadog dashboard JSON, use 'ordered' layout — 'free' layout fails on import.
